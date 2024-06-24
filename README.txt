@@ -34,4 +34,6 @@ We recommend that you start your implementation with:
 - implement the I/O redirection
 - Finally implement the bonus command and pipes.
 
+проверяю вносятся ли изменения на виртуалке и у тебя
+
 Good luck :)
