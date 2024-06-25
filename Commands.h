@@ -10,15 +10,39 @@
 
 class Command {
 // TODO: Add your data members
-public:
-    Command(const char *cmd_line);
+std::string command_str;
+std::string command_name;
+vector <std::string> command_args;
+bool isBackground;
 
-    virtual ~Command();
+public:
+    Command(const char *cmd_line) : command_str(cmd_line), isBackground(false) {
+        std::istringstream stream(cmd_line);
+        std::string word;
+
+        stream >> command_name;
+
+        while (stream >> word) command_args.push_back(word);
+
+        if (command_str.back() == '&') isBackground = true;
+        {
+            if (command_name.back() == '&') command_name = command_name.substr(0, command_name.size() - 1);
+            else if (command_args.back() == "&") command_args.pop_back();
+            else command_args.back() = command_args.back().substr(0, command_args.back().size() - 1);
+        }
+
+    };
+
+    virtual ~Command() = default;
 
     virtual void execute() = 0;
     //virtual void prepare();
     //virtual void cleanup();
     // TODO: Add your extra methods if needed
+
+    bool background() {
+        return isBackground;
+    }
 };
 
 class BuiltInCommand : public Command {
