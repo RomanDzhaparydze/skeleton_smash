@@ -3,6 +3,7 @@
 
 #include <utility>
 #include <vector>
+#include <unistd.h>
 
 using namespace std;
 
@@ -66,10 +67,9 @@ public:
     void execute() override {
         if(command_args.size() == 0)
         {
-            curr_prompt = "smash";
-            return;
+            //curr_prompt = "smash";
         } else {
-            this.curr_prompt = command_args[0];
+            //this.curr_prompt = command_args[0];
         } 
         
     };
@@ -129,26 +129,26 @@ class ChangeDirCommand : public BuiltInCommand {
 
 class GetCurrDirCommand : public BuiltInCommand {
 public:
-    GetCurrDirCommand(const char *cmd_line);
+    GetCurrDirCommand(const char *cmd_line): BuiltInCommand(cmd_line) {};
 
     virtual ~GetCurrDirCommand() {}
 
     void execute() override {
-        // char *buf = get_current_dir_name();
-        // std::cout << buf << std::endl;
-        std::filesystem::path current_path = std::filesystem::current_path();
-        std::cout << current_path << std::endl;
+        char BUFFER[100000];
+        if(getcwd(BUFFER, sizeof(BUFFER))!= NULL) {
+            cout << BUFFER << endl;
+        }
     };
 };
 
 class ShowPidCommand : public BuiltInCommand {
 public:
-    ShowPidCommand(const char *cmd_line);
+    ShowPidCommand(const char *cmd_line): BuiltInCommand(cmd_line) {};
 
     virtual ~ShowPidCommand() {}
 
     void execute() override {
-        cout <<
+        cout << endl;
     }
 };
 
@@ -209,8 +209,9 @@ public:
 
 class JobsCommand : public BuiltInCommand {
     // TODO: Add your data members
+    JobsList * jobs;
 public:
-    JobsCommand(const char *cmd_line, JobsList *jobs);
+    JobsCommand(const char *cmd_line, JobsList *jobs): BuiltInCommand(cmd_line), jobs(jobs) {};
 
     virtual ~JobsCommand() {}
 
@@ -222,15 +223,16 @@ public:
 
 class KillCommand : public BuiltInCommand {
     // TODO: Add your data members
+    JobsList * jobs;
 public:
-    KillCommand(const char *cmd_line, JobsList *jobs);
+    KillCommand(const char *cmd_line, JobsList *jobs): BuiltInCommand(cmd_line), jobs(jobs) {};
 
     virtual ~KillCommand() {}
 
     void execute() override {
 
         if(command_args.at(0).compare("kill")==0) {
-            jobs_list_of_shell.killAllJobs();
+            jobs->killAllJobs();
         } 
         exit(0);
     };
@@ -287,7 +289,7 @@ class SmallShell {
 private:
     // TODO: Add your data members
     std::string curr_prompt;
-    JobsList job_list_of_shell;
+    JobsList * job_list_of_shell;
     SmallShell();
 
 public:
