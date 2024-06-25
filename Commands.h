@@ -3,6 +3,7 @@
 
 #include <utility>
 #include <vector>
+#include <algorithm>
 
 using namespace std;
 
@@ -55,7 +56,7 @@ public:
 
 class BuiltInCommand : public Command {
 public:
-    BuiltInCommand(const char *cmd_line);
+    BuiltInCommand(const char *cmd_line) : Command(cmd_line) {};
     
     virtual ~BuiltInCommand() {}
 };
@@ -119,12 +120,38 @@ public:
 };
 
 class ChangeDirCommand : public BuiltInCommand {
-// TODO: Add your data members public:
-    ChangeDirCommand(const char *cmd_line, char **plastPwd);
+private:
+    char **plastPwd;
+
+public:
+    ChangeDirCommand(const char *cmd_line, char **plastPwd) : BuiltInCommand(cmd_line), plastPwd(plastPwd) {};
 
     virtual ~ChangeDirCommand() {}
 
-    void execute() override;
+    void execute() override {
+        if (command_args.size() != 1) {
+            std::cerr << "smash error: cd: too many arguments" << std::endl;
+            return;
+        }
+
+        if (command_args[0] == "-") {
+            if (*plastPwd == nullptr) {
+                std::cerr << "smash error: cd: OLDPWD not set" << std::endl;
+                return;
+            }
+            command_args[0] = *plastPwd;
+        };
+
+        char curr_dir[COMMAND_MAX_LENGTH];
+        getcwd(curr_dir, sizeof(curr_dir));
+
+        if (chdir(command_args[0]) != 0) {
+            perror("smash error: chdir failed");
+            return;
+        }
+        if (*plastPwd != nullptr) free(*plastPwd);
+        *plastPwd = strdup(curr_dir);
+    }
 };
 
 class GetCurrDirCommand : public BuiltInCommand {
@@ -143,12 +170,12 @@ public:
 
 class ShowPidCommand : public BuiltInCommand {
 public:
-    ShowPidCommand(const char *cmd_line);
+    ShowPidCommand(const char *cmd_line) : BuiltInCommand(cmd_line) {};
 
     virtual ~ShowPidCommand() {}
 
     void execute() override {
-        cout <<
+        cout << getpid() << endl;
     }
 };
 
@@ -204,6 +231,10 @@ public:
     JobEntry *getLastJob(int *lastJobId);
 
     JobEntry *getLastStoppedJob(int *jobId);
+
+    std::vector<JobEntry*> getJobsList() const {
+        return jobs_list;
+    }
     // TODO: Add extra methods or modify exisitng ones as needed
 };
 
@@ -237,13 +268,28 @@ public:
 };
 
 class ForegroundCommand : public BuiltInCommand {
-    // TODO: Add your data members
+private:
+    JobsList* jobs_list;
 public:
-    ForegroundCommand(const char *cmd_line, JobsList *jobs);
+    ForegroundCommand(const char *cmd_line, JobsList *jobs) : BuiltInCommand(cmd_line), jobs_list(jobs) {};
 
     virtual ~ForegroundCommand() {}
 
-    void execute() override;
+    void execute() override {
+        if (command_args.size() == 0 && (*jobs_list).getJobsList().empty()) {
+            cerr << "smash error: fg: jobs list is empty" << endl;
+            return;
+        }
+        if (command_args.size() > 1 || (command_args.size() == 1 && !all_of(command_args[0].begin(), command_args[0].end(), ::isdigit))) {
+            cerr << "smash error: fg: invalid arguments" << endl;
+            return;
+        }
+        bool isIdGiven = command_args.size() == 1;
+        if (isIdGiven) {
+            int id =
+            if (jobs_list->getJobById(command_args[0]))
+        }
+    }
 };
 
 class ListDirCommand : public BuiltInCommand {
@@ -288,6 +334,9 @@ private:
     // TODO: Add your data members
     std::string curr_prompt;
     JobsList job_list_of_shell;
+
+    char* lastPwd;
+
     SmallShell();
 
 public:

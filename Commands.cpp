@@ -151,16 +151,18 @@ void JobsList::addJob(Command *cmd, bool isStopped) {
     removeFinishedJobs();
     int job_id = 1;
     if (!jobs_list.empty()) job_id = jobs_list.back()->job_id + 1;
+
     pid_t child_pid = fork();
+    if (child_pid == -1) {
+        perror("smash error: fork failed");
+        return;
+    }
     if (child_pid == 0) {
         cmd->execute();
-    }
-    else {
-        if (cmd->background()) {
-            JobEntry new_job(job_id, child_pid, cmd, isStopped);
-            jobs_list.push_back(&new_job);
-        }
-        else waitpid(child_pid, NULL, 0);
+        exit(0);
+    } else {
+        if (cmd->background()) jobs_list.emplace_back(new JobEntry(job_id, child_pid, cmd, isStopped));
+        else waitpid(child_pid, nullptr, 0);
     }
 }
 
@@ -183,7 +185,10 @@ void JobsList::removeFinishedJobs() {
     while (it != jobs_list.end()) {
         int end_status;
         pid_t result = waitpid((*it)->job_pid, &end_status, WNOHANG);
-        if (result != 0) it = jobs_list.erase(it);
+        if (result != 0) {
+            delete *it;
+            it = jobs_list.erase(it);
+        }
         else it++;
     }
 
@@ -200,6 +205,7 @@ void JobsList::removeJobById(int jobId) {
     auto it = jobs_list.begin();
     while (it != jobs_list.end()) {
         if ((*it)->job_id == jobId) {
+            delete *it;
             jobs_list.erase(it);
             return;
         }
