@@ -62,23 +62,7 @@ public:
     virtual ~BuiltInCommand() {}
 };
 
-class ChPromptCommand : public BuiltInCommand {
-public:
-    ChPromptCommand(const char* cmd_line);
-    void execute() override {
-        if(command_args.size() == 0)
-        {
-            //curr_prompt = "smash";
-        } else {
-            //this.curr_prompt = command_args[0];
-        } 
-        
-    };
-    virtual ~ChPromptCommand() {};
-private:
 
-
-};
 
 class ExternalCommand : public Command {
 public:
@@ -288,9 +272,14 @@ public:
         }
         bool isIdGiven = command_args.size() == 1;
         if (isIdGiven) {
-            int id =
-            if (jobs_list->getJobById(command_args[0]))
+            int id = stoi(command_args[0]);
+            if (jobs_list->getJobById(id) == nullptr) {
+                cerr << "smash error: fg: job-id " << id << " does not exist" << endl;
+                return;
+            }
+
         }
+
     }
 };
 
@@ -334,13 +323,13 @@ public:
 class SmallShell {
 private:
     // TODO: Add your data members
-    std::string curr_prompt;
     JobsList * job_list_of_shell;
     char* lastPwd;
 
     SmallShell();
 
 public:
+    static std::string curr_prompt;
     Command *CreateCommand(const char *cmd_line);
 
     SmallShell(SmallShell const &) = delete; // disable copy ctor
@@ -355,8 +344,25 @@ public:
     ~SmallShell();
 
     void executeCommand(const char *cmd_line) {}
-    } ;
     // TODO: add extra methods as needed
+};
+
+class ChPromptCommand : public BuiltInCommand {
+public:
+    ChPromptCommand(const char* cmd_line) : BuiltInCommand(cmd_line) {};
+    void execute() override {
+        if(command_args.empty())
+        {
+            SmallShell::curr_prompt = "smash";
+        } else {
+            SmallShell::curr_prompt = command_args[0];
+        }
+
+    };
+    virtual ~ChPromptCommand() {};
+private:
+
+
 };
 
 #endif //SMASH_COMMAND_H_
