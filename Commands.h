@@ -128,8 +128,7 @@ public:
 
         char curr_dir[COMMAND_MAX_LENGTH];
         getcwd(curr_dir, sizeof(curr_dir));
-
-        if (chdir(command_args[0]) != 0) {
+        if (chdir(command_args[0].c_str()) != 0) {
             perror("smash error: chdir failed");
             return;
         }
@@ -262,7 +261,7 @@ public:
     virtual ~ForegroundCommand() {}
 
     void execute() override {
-        if (command_args.size() == 0 && (*jobs_list).getJobsList().empty()) {
+        if (command_args.empty() && jobs_list->getJobsList().empty()) {
             cerr << "smash error: fg: jobs list is empty" << endl;
             return;
         }
@@ -271,14 +270,19 @@ public:
             return;
         }
         bool isIdGiven = command_args.size() == 1;
+        JobsList::JobEntry* curr_job;
         if (isIdGiven) {
             int id = stoi(command_args[0]);
-            if (jobs_list->getJobById(id) == nullptr) {
+            curr_job = jobs_list->getJobById(id);
+            if (curr_job == nullptr) {
                 cerr << "smash error: fg: job-id " << id << " does not exist" << endl;
                 return;
             }
-
         }
+        else {
+            curr_job = jobs_list->getLastJob(nullptr);
+        }
+        cout << curr_job->command->getCommandStr() << " " <<
 
     }
 };
