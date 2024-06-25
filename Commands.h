@@ -4,6 +4,9 @@
 #include <utility>
 #include <vector>
 
+using namespace std;
+
+
 #define COMMAND_MAX_LENGTH (200)
 #define COMMAND_MAX_ARGS (20)
 
@@ -130,7 +133,9 @@ public:
 
     virtual ~ShowPidCommand() {}
 
-    void execute() override;
+    void execute() override {
+        cout <<
+    }
 };
 
 class JobsList;
