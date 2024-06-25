@@ -84,8 +84,7 @@ SmallShell::~SmallShell() {
 // TODO: add your implementation
 }
 
-/
-* Creates and returns a pointer to Command class which matches the given command line (cmd_line)
+/* Creates and returns a pointer to Command class which matches the given command line (cmd_line)
 */
 
     // For example:
@@ -110,6 +109,15 @@ Command *SmallShell::CreateCommand(const char *cmd_line) {
 
     string cmd_s = _trim(string(cmd_line)); 
     string firstWord = cmd_s.substr(0, cmd_s.find_first_of(" \n"));
+
+    auto alias_it = alias_map.find(firstWord);
+    if (alias_it != alias_map.end()) {
+        string alias_cmd = alias_it->second + cmd_s.substr(firstWord.length());
+        cmd_s = _trim(string(alias_cmd));
+        firstWord = cmd_s.substr(0, cmd_s.find_first_of(" \n"));
+    }
+
+
     if(firstWord.compare("chprompt")){
         return new ChPromptCommand(cmd_line);
     } else if (firstWord.compare("pwd")){
@@ -117,19 +125,19 @@ Command *SmallShell::CreateCommand(const char *cmd_line) {
     } else if (firstWord.compare("showpid")) {
         return new ShowPidCommand(cmd_line);
     } else if (firstWord.compare("cd")) {
-        return new ChangeDirCommand(cmd_line, // TODO);
+        return new ChangeDirCommand(cmd_line, &lastPwd);
     } else if (firstWord.compare("jobs")) {
         return new JobsCommand(cmd_line, this->job_list_of_shell);
     } else if (firstWord.compare("fg")) {
         return new ForegroundCommand(cmd_line, this->job_list_of_shell);
     } else if (firstWord.compare("quit")) {
-        return new QuitCommand(cmd_line, this->job_list_of_shell) //TODO;
+        return new QuitCommand(cmd_line, this->job_list_of_shell);
     } else if (firstWord.compare("kill")) {
         return new KillCommand(cmd_line, this->job_list_of_shell);
     } else if (firstWord.compare("alias")) {
-        return new aliasCommand(cmd_line);
+        return new aliasCommand(cmd_line, alias_map);
     } else if (firstWord.compare("unalias")) {
-        return new unaliasCommand(cmd_line);
+        return new unaliasCommand(cmd_line, alias_map);
     } else {
         // TODO: call default shell to execute the command
         return new ExternalCommand(cmd_line);

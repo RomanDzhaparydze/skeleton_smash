@@ -5,6 +5,9 @@
 #include <vector>
 #include <algorithm>
 #include <unistd.h>
+#include <map>
+#include <set>
+#include <regex>
 
 using namespace std;
 
@@ -57,7 +60,9 @@ public:
 
 class BuiltInCommand : public Command {
 public:
-    BuiltInCommand(const char *cmd_line) : Command(cmd_line) {};
+    BuiltInCommand(const char *cmd_line) : Command(cmd_line) {
+        isBackground = false;
+    }
     
     virtual ~BuiltInCommand() {}
 };
@@ -148,7 +153,7 @@ public:
         if(getcwd(BUFFER, sizeof(BUFFER))!= NULL) {
             cout << BUFFER << endl;
         }
-    };
+    }
 };
 
 class ShowPidCommand : public BuiltInCommand {
@@ -165,7 +170,8 @@ public:
 class JobsList;
 
 class QuitCommand : public BuiltInCommand {
-// TODO: Add your data members public:
+// TODO: Add your data members
+public:
     QuitCommand(const char *cmd_line, JobsList *jobs);
 
     virtual ~QuitCommand() {}
@@ -232,7 +238,7 @@ public:
     void execute() override {
         jobs->printJobsList();
     
-    };
+    }
 };
 
 class KillCommand : public BuiltInCommand {
@@ -244,12 +250,24 @@ public:
     virtual ~KillCommand() {}
 
     void execute() override {
-
-        if(command_args.at(0).compare("kill")==0) {
-            jobs->killAllJobs();
-        } 
-        exit(0);
-    };
+        if (command_args.size() != 2 || command_args[0][0] != '-' || (command_args.size() == 2 && !all_of(command_args[0].begin() + 1, command_args[0].end(), ::isdigit)
+        && !all_of(command_args[1].begin(), command_args[1].end(), ::isdigit))) {
+            cerr << "smash error: kill: invalid arguments" << endl;
+            return;
+        }
+        int signal = stoi(command_args[0].substr(1));
+        int id = stoi(command_args[0]);
+        JobsList::JobEntry* curr_job = jobs->getJobById(id);
+        if (curr_job == nullptr) {
+            cerr << "smash error: kill: job-id "<< id <<" does not exist" << endl;
+            return;
+        }
+        if (kill(curr_job->job_pid, signal) == -1) {
+            perror("smash error: kill failed");
+            return;
+        }
+        std::cout << "signal number " << signal << " was sent to pid " << curr_job->job_pid << std::endl;
+    }
 };
 
 class ForegroundCommand : public BuiltInCommand {
@@ -271,8 +289,9 @@ public:
         }
         bool isIdGiven = command_args.size() == 1;
         JobsList::JobEntry* curr_job;
+        int id;
         if (isIdGiven) {
-            int id = stoi(command_args[0]);
+            id = stoi(command_args[0]);
             curr_job = jobs_list->getJobById(id);
             if (curr_job == nullptr) {
                 cerr << "smash error: fg: job-id " << id << " does not exist" << endl;
@@ -280,10 +299,11 @@ public:
             }
         }
         else {
-            curr_job = jobs_list->getLastJob(nullptr);
+            curr_job = jobs_list->getLastJob(&id);
         }
-        cout << curr_job->command->getCommandStr() << " " <<
-
+        cout << curr_job->command->getCommandStr() << " " << curr_job->job_pid << endl;
+        waitpid(curr_job->job_pid, nullptr, 0);
+        jobs_list->removeJobById(id);
     }
 };
 
@@ -305,22 +325,82 @@ public:
     void execute() override;
 };
 
+static set<string> reserved_keywords = {
+        "chprompt", "showpid", "pwd", "cd", "jobs", "fg", "quit", "kill", "alias", "unalias", "listdir", "getuser", "watch",
+        "chprompt&", "showpid&", "pwd&", "cd&", "jobs&", "fg&", "quit&", "kill&", "alias&", "unalias&", "listdir&", "getuser&", "watch&"
+};
+
+static regex regex_exp_for_name("^([a-zA-Z0-9_]+)='([^']*)'$");
+
+
 class aliasCommand : public BuiltInCommand {
+private:
+    map<string, string>& alias_map;
 public:
-    aliasCommand(const char *cmd_line);
+    aliasCommand(const char *cmd_line, map<string, string>& alias_map) : BuiltInCommand(cmd_line), alias_map(alias_map) {}
 
     virtual ~aliasCommand() {}
 
-    void execute() override;
+    void execute() override {
+        if (command_args.empty()) {
+            for (auto& alias: alias_map) {
+                cout << alias.first << "='" << alias.second << "'" << endl;
+            }
+            return;
+        }
+        if (command_args.size() != 1 || !regex_match(command_args[0], regex_exp_for_name)) {
+            std::cerr << "smash error: alias: invalid alias format" << std::endl;
+            return;
+        }
+
+        size_t pos_of_equals = command_args[0].find('=');
+        if (pos_of_equals == 0 || pos_of_equals == command_args[0].size() - 1 || pos_of_equals == string::npos) {
+            std::cerr << "smash error: alias: invalid alias format" << std::endl;
+            return;
+        }
+
+        string new_name = command_args[0].substr(0, pos_of_equals);
+        string old_name = command_args[0].substr(pos_of_equals + 1);
+
+        if (old_name.front() =='\'' && old_name.back() == '\'') {
+            old_name = old_name.substr(1, old_name.size() - 2);
+        }
+        else {
+            std::cerr << "smash error: alias: invalid alias format" << std::endl;
+            return;
+        }
+
+        if (reserved_keywords.find(old_name) != reserved_keywords.end() ||
+            alias_map.find(new_name) != alias_map.end()) {
+            std::cerr << "smash error: alias: invalid alias format" << std::endl;
+            return;
+        }
+        alias_map[new_name] = old_name;
+    }
 };
 
 class unaliasCommand : public BuiltInCommand {
+private:
+    map<string, string>& alias_map;
 public:
-    unaliasCommand(const char *cmd_line);
+    unaliasCommand(const char *cmd_line, map<string, string>& alias_map) : BuiltInCommand(cmd_line), alias_map(alias_map) {}
 
     virtual ~unaliasCommand() {}
 
-    void execute() override;
+    void execute() override {
+        if (command_args.empty()) {
+            std::cerr << "smash error: unalias: not enough arguments" << std::endl;
+            return;
+        }
+        for (const auto& new_name : command_args) {
+            auto it = alias_map.find(new_name);
+            if (it == alias_map.end()) {
+                std::cerr << "smash error: unalias: " << new_name << " alias does not exist" << std::endl;
+                return;
+            }
+            alias_map.erase(it);
+        }
+    }
 };
 
 
@@ -329,7 +409,7 @@ private:
     // TODO: Add your data members
     JobsList * job_list_of_shell;
     char* lastPwd;
-
+    map<string, string> alias_map;
     SmallShell();
 
 public:
@@ -349,6 +429,10 @@ public:
 
     void executeCommand(const char *cmd_line) {}
     // TODO: add extra methods as needed
+
+    const map<string, string>& getAliasMap() const {
+        return alias_map;
+    }
 };
 
 class ChPromptCommand : public BuiltInCommand {
@@ -362,7 +446,7 @@ public:
             SmallShell::curr_prompt = command_args[0];
         }
 
-    };
+    }
     virtual ~ChPromptCommand() {};
 private:
 
