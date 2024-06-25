@@ -119,14 +119,15 @@ void SmallShell::executeCommand(const char *cmd_line) {
 void JobsList::addJob(Command *cmd, bool isStopped) {
     removeFinishedJobs();
     int job_id = 1;
-    if (!jobs_list.empty()) job_id = jobs_list.back().job_id + 1;
+    if (!jobs_list.empty()) job_id = jobs_list.back()->job_id + 1;
     pid_t child_pid = fork();
     if (child_pid == 0) {
         cmd->execute();
     }
     else {
         if (cmd->background()) {
-            jobs_list.emplace_back(job_id, child_pid, cmd, isStopped);
+            JobEntry new_job(job_id, child_pid, cmd, isStopped);
+            jobs_list.push_back(&new_job);
         }
         else waitpid(child_pid, NULL, 0);
     }
