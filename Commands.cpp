@@ -118,25 +118,25 @@ Command *SmallShell::CreateCommand(const char *cmd_line) {
     }
 
 
-    if(firstWord.compare("chprompt")){
+    if(firstWord.compare("chprompt") == 0){
         return new ChPromptCommand(cmd_line);
-    } else if (firstWord.compare("pwd")){
+    } else if (firstWord.compare("pwd") == 0){
         return new GetCurrDirCommand(cmd_line); 
-    } else if (firstWord.compare("showpid")) {
+    } else if (firstWord.compare("showpid") == 0) {
         return new ShowPidCommand(cmd_line);
-    } else if (firstWord.compare("cd")) {
+    } else if (firstWord.compare("cd") == 0) {
         return new ChangeDirCommand(cmd_line, &lastPwd);
-    } else if (firstWord.compare("jobs")) {
+    } else if (firstWord.compare("jobs") == 0) {
         return new JobsCommand(cmd_line, this->job_list_of_shell);
-    } else if (firstWord.compare("fg")) {
+    } else if (firstWord.compare("fg") == 0) {
         return new ForegroundCommand(cmd_line, this->job_list_of_shell);
-    } else if (firstWord.compare("quit")) {
+    } else if (firstWord.compare("quit") == 0) {
         return new QuitCommand(cmd_line, this->job_list_of_shell);
-    } else if (firstWord.compare("kill")) {
+    } else if (firstWord.compare("kill") == 0) {
         return new KillCommand(cmd_line, this->job_list_of_shell);
-    } else if (firstWord.compare("alias")) {
+    } else if (firstWord.compare("alias") == 0) {
         return new aliasCommand(cmd_line, alias_map);
-    } else if (firstWord.compare("unalias")) {
+    } else if (firstWord.compare("unalias") == 0) {
         return new unaliasCommand(cmd_line, alias_map);
     } else {
         // TODO: call default shell to execute the command
