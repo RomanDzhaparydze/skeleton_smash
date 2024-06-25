@@ -144,6 +144,7 @@ void SmallShell::executeCommand(const char *cmd_line) {
     //Command* cmd = CreateCommand(cmd_line);
     //cmd->execute();
     // Please note that you must fork smash process for some commands (e.g., external commands....)
+    cout << this.curr_prompt << ">" << endl;
 }
 
 void JobsList::addJob(Command *cmd, bool isStopped) {
