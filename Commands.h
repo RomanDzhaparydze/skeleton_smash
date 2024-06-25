@@ -63,7 +63,16 @@ public:
 class ChPromptCommand : public BuiltInCommand {
 public:
     ChPromptCommand(const char* cmd_line);
-    void execute() override;
+    void execute() override {
+        if(command_args.size() == 0)
+        {
+            curr_prompt = "smash";
+            return;
+        } else {
+            this.curr_prompt = command_args[0];
+        } 
+        
+    };
     virtual ~ChPromptCommand() {};
 private:
 
@@ -124,7 +133,12 @@ public:
 
     virtual ~GetCurrDirCommand() {}
 
-    void execute() override;
+    void execute() override {
+        // char *buf = get_current_dir_name();
+        // std::cout << buf << std::endl;
+        std::filesystem::path current_path = std::filesystem::current_path();
+        std::cout << current_path << std::endl;
+    };
 };
 
 class ShowPidCommand : public BuiltInCommand {
@@ -200,7 +214,10 @@ public:
 
     virtual ~JobsCommand() {}
 
-    void execute() override;
+    void execute() override {
+        jobs->printJobsList();
+    
+    };
 };
 
 class KillCommand : public BuiltInCommand {
@@ -210,7 +227,13 @@ public:
 
     virtual ~KillCommand() {}
 
-    void execute() override;
+    void execute() override {
+
+        if(command_args.at(0).compare("kill")==0) {
+            jobs_list_of_shell.killAllJobs();
+        } 
+        exit(0);
+    };
 };
 
 class ForegroundCommand : public BuiltInCommand {
@@ -281,7 +304,8 @@ public:
 
     ~SmallShell();
 
-    void executeCommand(const char *cmd_line) ;
+    void executeCommand(const char *cmd_line) {}
+    } ;
     // TODO: add extra methods as needed
 };
 
