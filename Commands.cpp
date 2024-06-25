@@ -117,15 +117,15 @@ Command *SmallShell::CreateCommand(const char *cmd_line) {
     } else if (firstWord.compare("showpid")) {
         return new ShowPidCommand(cmd_line);
     } else if (firstWord.compare("cd")) {
-        return new ChangeDirCommand(cmd_line);
+        return new ChangeDirCommand(cmd_line, // TODO);
     } else if (firstWord.compare("jobs")) {
-        return new JobsCommand(cmd_line);
+        return new JobsCommand(cmd_line, this->job_list_of_shell);
     } else if (firstWord.compare("fg")) {
-        return new ForegroundCommand(cmd_line);
+        return new ForegroundCommand(cmd_line, this->job_list_of_shell);
     } else if (firstWord.compare("quit")) {
-        return new QuitCommand(cmd_line);
+        return new QuitCommand(cmd_line, this->job_list_of_shell) //TODO;
     } else if (firstWord.compare("kill")) {
-        return new KillCommand(cmd_line);
+        return new KillCommand(cmd_line, this->job_list_of_shell);
     } else if (firstWord.compare("alias")) {
         return new aliasCommand(cmd_line);
     } else if (firstWord.compare("unalias")) {
@@ -144,7 +144,7 @@ void SmallShell::executeCommand(const char *cmd_line) {
     //Command* cmd = CreateCommand(cmd_line);
     //cmd->execute();
     // Please note that you must fork smash process for some commands (e.g., external commands....)
-    cout << this.curr_prompt << ">" << endl;
+    cout << this->curr_prompt << ">" << endl;
 }
 
 void JobsList::addJob(Command *cmd, bool isStopped) {
