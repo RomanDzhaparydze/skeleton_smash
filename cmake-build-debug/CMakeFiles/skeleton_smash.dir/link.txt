@@ -1,0 +1,3 @@
+"C:\Program Files\JetBrains\CLion 2023.3.4\bin\cmake\win\x64\bin\cmake.exe" -E rm -f CMakeFiles\skeleton_smash.dir/objects.a
+C:\MinGW\bin\ar.exe qc CMakeFiles\skeleton_smash.dir/objects.a @CMakeFiles\skeleton_smash.dir\objects1.rsp
+C:\MinGW\bin\c++.exe -g -Wl,--whole-archive CMakeFiles\skeleton_smash.dir/objects.a -Wl,--no-whole-archive -o skeleton_smash.exe -Wl,--out-implib,libskeleton_smash.dll.a -Wl,--major-image-version,0,--minor-image-version,0 @CMakeFiles\skeleton_smash.dir\linkLibs.rsp

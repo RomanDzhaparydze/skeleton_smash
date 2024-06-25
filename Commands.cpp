@@ -122,11 +122,70 @@ void JobsList::addJob(Command *cmd, bool isStopped) {
     if (!jobs_list.empty()) job_id = jobs_list.back().job_id + 1;
     pid_t child_pid = fork();
     if (child_pid == 0) {
-        cmd.execute();
+        cmd->execute();
     }
     else {
-        if (cmd.background()) {
-            
+        if (cmd->background()) {
+            jobs_list.emplace_back(job_id, child_pid, cmd, isStopped);
+        }
+        else waitpid(child_pid, NULL, 0);
+    }
+}
+
+void JobsList::printJobsList() {
+    removeFinishedJobs();
+    for (JobEntry* job : jobs_list) {
+        cout << "[" << job->job_id << "] " << job->command->getCommandStr() << endl;
+    }
+}
+
+void JobsList::killAllJobs() {
+    for (JobEntry* job : jobs_list) {
+        if (kill(job->job_id, SIGKILL) != 0) perror("smash error: kill failed");
+    }
+    jobs_list.clear();
+}
+
+void JobsList::removeFinishedJobs() {
+    auto it = jobs_list.begin();
+    while (it != jobs_list.end()) {
+        int end_status;
+        pid_t result = waitpid((*it)->job_pid, &end_status, WNOHANG);
+        if (result != 0) it = jobs_list.erase(it);
+        else it++;
+    }
+
+}
+
+JobsList::JobEntry *JobsList::getJobById(int jobId) {
+    for (JobEntry* job : jobs_list) {
+        if (job->job_id == jobId) return job;
+    }
+    return nullptr;
+}
+
+void JobsList::removeJobById(int jobId) {
+    auto it = jobs_list.begin();
+    while (it != jobs_list.end()) {
+        if ((*it)->job_id == jobId) {
+            jobs_list.erase(it);
+            return;
         }
     }
+}
+
+JobsList::JobEntry *JobsList::getLastJob(int *lastJobId) {
+    *lastJobId = jobs_list.back()->job_id;
+    return jobs_list.back();
+}
+
+JobsList::JobEntry *JobsList::getLastStoppedJob(int *jobId) {
+    auto it = jobs_list.end() - 1;
+    while (it != jobs_list.begin()) {
+        if ((*it)->isStopped) {
+            *jobId = (*it)->job_id;
+            return *it;
+        }
+    }
+    return nullptr;
 }

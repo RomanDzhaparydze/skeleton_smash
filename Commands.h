@@ -12,7 +12,7 @@ class Command {
 // TODO: Add your data members
 std::string command_str;
 std::string command_name;
-vector <std::string> command_args;
+std::vector <std::string> command_args;
 bool isBackground;
 
 public:
@@ -40,8 +40,12 @@ public:
     //virtual void cleanup();
     // TODO: Add your extra methods if needed
 
-    bool background() {
+    bool background() const {
         return isBackground;
+    }
+
+    std::string getCommandStr() const {
+        return command_str;
     }
 };
 
@@ -136,19 +140,19 @@ public:
     public:
         int job_id;
         pid_t job_pid;
-        std::string command;
+        Command* command;
 
         time_t start_time;
         bool isStopped;
 
-        JobEntry(int job_id, pid_t job_pid, std::string  command, bool isStopped)
-                : job_id(job_id), job_pid(job_pid), command(std::move(command)), isStopped(isStopped) {
+        JobEntry(int job_id, pid_t job_pid, Command* command, bool isStopped)
+                : job_id(job_id), job_pid(job_pid), command(command), isStopped(isStopped) {
             time(&start_time);
         }
     };
 
 private:
-    std::vector<JobEntry> jobs_list;
+    std::vector<JobEntry*> jobs_list;
 
 public:
     JobsList() = default;
