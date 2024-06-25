@@ -10,6 +10,7 @@
 
 class Command {
 // TODO: Add your data members
+protected:
 std::string command_str;
 std::string command_name;
 std::vector <std::string> command_args;
@@ -52,8 +53,18 @@ public:
 class BuiltInCommand : public Command {
 public:
     BuiltInCommand(const char *cmd_line);
-
+    
     virtual ~BuiltInCommand() {}
+};
+
+class ChPromptCommand : public BuiltInCommand {
+public:
+    ChPromptCommand(const char* cmd_line);
+    void execute() override;
+    virtual ~ChPromptCommand() {};
+private:
+
+
 };
 
 class ExternalCommand : public Command {
@@ -247,6 +258,8 @@ public:
 class SmallShell {
 private:
     // TODO: Add your data members
+    std::string curr_prompt;
+    JobsList job_list_of_shell;
     SmallShell();
 
 public:
@@ -263,7 +276,7 @@ public:
 
     ~SmallShell();
 
-    void executeCommand(const char *cmd_line);
+    void executeCommand(const char *cmd_line) ;
     // TODO: add extra methods as needed
 };
 
