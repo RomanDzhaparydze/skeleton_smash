@@ -36,7 +36,7 @@ string _trim(const std::string &s) {
     return _rtrim(_ltrim(s));
 }
 
-int _parseCommandLine(const char *cmd_line, char args) {
+int _parseCommandLine(const char *cmd_line, char** args) {
     FUNC_ENTRY()
     int i = 0;
     std::istringstream iss(_trim(string(cmd_line)).c_str());
@@ -152,26 +152,30 @@ void SmallShell::executeCommand(const char *cmd_line) {
     //Command* cmd = CreateCommand(cmd_line);
     //cmd->execute();
     // Please note that you must fork smash process for some commands (e.g., external commands....)
-    cout << this->curr_prompt << ">" << endl;
+    cout << SmallShell::curr_prompt << ">" << endl;
+    Command* cmd = CreateCommand(cmd_line);
+    cmd->execute();
 }
 
-void JobsList::addJob(Command *cmd, bool isStopped) {
+void JobsList::addJob(Command *cmd, int pid, bool isStopped) {
     removeFinishedJobs();
     int job_id = 1;
     if (!jobs_list.empty()) job_id = jobs_list.back()->job_id + 1;
+    jobs_list.push_back(new JobEntry(job_id, pid, cmd, isStopped));
 
-    pid_t child_pid = fork();
-    if (child_pid == -1) {
-        perror("smash error: fork failed");
-        return;
-    }
-    if (child_pid == 0) {
-        cmd->execute();
-        exit(0);
-    } else {
-        if (cmd->background()) jobs_list.emplace_back(new JobEntry(job_id, child_pid, cmd, isStopped));
-        else waitpid(child_pid, nullptr, 0);
-    }
+//    pid_t child_pid = fork();
+//    if (child_pid == -1) {
+//        perror("smash error: fork failed");
+//        return;
+//    }
+//    if (child_pid == 0) {
+//        setpgrp();
+//        cmd->execute();
+//        exit(0);
+//    } else {
+//        if (cmd->background()) jobs_list.emplace_back(new JobEntry(job_id, child_pid, cmd, isStopped));
+//        else waitpid(child_pid, nullptr, 0);
+//    }
 }
 
 void JobsList::printJobsList() {
@@ -234,4 +238,17 @@ JobsList::JobEntry *JobsList::getLastStoppedJob(int *jobId) {
         }
     }
     return nullptr;
+}
+
+Command::Command(const char *cmd_line) : command_str(cmd_line) {
+    isBackground = _isBackgroundComamnd(cmd_line);
+    char* new_cmd = strdup(cmd_line);
+    if (isBackground) _removeBackgroundSign(new_cmd);
+
+    istringstream stream(cmd_line);
+    string word;
+
+    while (stream >> word) command_args.push_back(word);
+
+    free(new_cmd);
 }

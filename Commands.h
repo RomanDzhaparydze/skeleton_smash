@@ -20,28 +20,13 @@ using namespace std;
 class Command {
 // TODO: Add your data members
 protected:
-std::string command_str;
-std::string command_name;
-std::vector <std::string> command_args;
+string command_str;
+string command_name;
+vector <string> command_args;
 bool isBackground;
 
 public:
-    Command(const char *cmd_line) : command_str(cmd_line), isBackground(false) {
-        std::istringstream stream(cmd_line);
-        std::string word;
-
-        stream >> command_name;
-
-        while (stream >> word) command_args.push_back(word);
-
-        if (command_str.back() == '&') isBackground = true;
-        {
-            if (command_name.back() == '&') command_name = command_name.substr(0, command_name.size() - 1);
-            else if (command_args.back() == "&") command_args.pop_back();
-            else command_args.back() = command_args.back().substr(0, command_args.back().size() - 1);
-        }
-
-    };
+    Command(const char *cmd_line);
 
     virtual ~Command() = default;
 
@@ -54,7 +39,7 @@ public:
         return isBackground;
     }
 
-    std::string getCommandStr() const {
+    string getCommandStr() const {
         return command_str;
     }
 };
@@ -70,14 +55,7 @@ public:
 
 
 
-class ExternalCommand : public Command {
-public:
-    ExternalCommand(const char *cmd_line);
 
-    virtual ~ExternalCommand() {}
-
-    void execute() override;
-};
 
 class PipeCommand : public Command {
     // TODO: Add your data members
@@ -198,7 +176,7 @@ public:
 
     ~JobsList() = default;
 
-    void addJob(Command *cmd, bool isStopped = false);
+    void addJob(Command *cmd, int pid ,bool isStopped = false);
 
     void printJobsList();
 
@@ -311,7 +289,10 @@ public:
             curr_job = jobs_list->getLastJob(&id);
         }
         cout << curr_job->command->getCommandStr() << " " << curr_job->job_pid << endl;
-        waitpid(curr_job->job_pid, nullptr, 0);
+        int status;
+        if (waitpid(curr_job->job_pid, &status, WUNTRACED) == -1) {
+            perror("smash error: waitpid failed");
+        }
         jobs_list->removeJobById(id);
     }
 };
@@ -436,11 +417,15 @@ public:
 
     ~SmallShell();
 
-    void executeCommand(const char *cmd_line) {}
+    void executeCommand(const char *cmd_line);
     // TODO: add extra methods as needed
 
     const map<string, string>& getAliasMap() const {
         return alias_map;
+    }
+
+    JobsList* getJobsList() {
+        return job_list_of_shell;
     }
 };
 
@@ -456,10 +441,57 @@ public:
         }
 
     }
-    virtual ~ChPromptCommand() {};
+    virtual ~ChPromptCommand() {}
 private:
 
 
+};
+
+class ExternalCommand : public Command {
+public:
+    ExternalCommand(const char *cmd_line) : Command(cmd_line) {}
+
+    virtual ~ExternalCommand() = default;
+
+    void execute() override {
+        pid_t pid = fork();
+        if (pid == -1) {
+            perror("smash error: fork failed");
+            return;
+        }
+        else if (pid == 0) {
+            setpgrp();
+
+            vector<const char*> argv;
+            argv.push_back(command_name.c_str());
+            for (const string& command_arg : command_args) {
+                argv.push_back(command_arg.c_str());
+            }
+            argv.push_back(nullptr);
+
+            if (command_name.find('*') == string::npos && command_name.find('?') == string::npos) {
+                execvp(argv[0], const_cast<char* const*>(argv.data()));
+            } else {
+                execl("/bin/bash", "bash", "-c", command_str.c_str(), nullptr);
+            }
+            perror("smash error: exec failed");
+            exit(1);
+        }
+        else {
+            if (isBackground) {
+                SmallShell& smallShell = SmallShell::getInstance();
+                smallShell.getJobsList()->addJob(this, pid, false);
+            }
+            else {
+                int status;
+                if (waitpid(pid, &status, WUNTRACED) == -1) {
+                    perror("smash error: waitpid failed");
+                }
+            }
+        }
+
+
+    }
 };
 
 #endif //SMASH_COMMAND_H_
