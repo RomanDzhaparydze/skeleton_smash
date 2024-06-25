@@ -1,10 +1,12 @@
 #ifndef SMASH_COMMAND_H_
 #define SMASH_COMMAND_H_
 
+#include <utility>
 #include <vector>
 
 #define COMMAND_MAX_LENGTH (200)
 #define COMMAND_MAX_ARGS (20)
+
 
 class Command {
 // TODO: Add your data members
@@ -107,13 +109,27 @@ class QuitCommand : public BuiltInCommand {
 class JobsList {
 public:
     class JobEntry {
-        // TODO: Add your data members
-    };
-    // TODO: Add your data members
-public:
-    JobsList();
+    public:
+        int job_id;
+        pid_t job_pid;
+        std::string command;
 
-    ~JobsList();
+        time_t start_time;
+        bool isStopped;
+
+        JobEntry(int job_id, pid_t job_pid, std::string  command, bool isStopped)
+                : job_id(job_id), job_pid(job_pid), command(std::move(command)), isStopped(isStopped) {
+            time(&start_time);
+        }
+    };
+
+private:
+    std::vector<JobEntry> jobs_list;
+
+public:
+    JobsList() = default;
+
+    ~JobsList() = default;
 
     void addJob(Command *cmd, bool isStopped = false);
 

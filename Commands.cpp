@@ -13,10 +13,10 @@ const std::string WHITESPACE = " \n\r\t\f\v";
 
 #if 0
 #define FUNC_ENTRY()  \
-  cout << __PRETTY_FUNCTION__ << " --> " << endl;
+  cout << PRETTY_FUNCTION << " --> " << endl;
 
 #define FUNC_EXIT()  \
-  cout << __PRETTY_FUNCTION__ << " <-- " << endl;
+  cout << PRETTY_FUNCTION << " <-- " << endl;
 #else
 #define FUNC_ENTRY()
 #define FUNC_EXIT()
@@ -36,7 +36,7 @@ string _trim(const std::string &s) {
     return _rtrim(_ltrim(s));
 }
 
-int _parseCommandLine(const char *cmd_line, char **args) {
+int _parseCommandLine(const char *cmd_line, char args) {
     FUNC_ENTRY()
     int i = 0;
     std::istringstream iss(_trim(string(cmd_line)).c_str());
@@ -84,7 +84,7 @@ SmallShell::~SmallShell() {
 // TODO: add your implementation
 }
 
-/**
+/
 * Creates and returns a pointer to Command class which matches the given command line (cmd_line)
 */
 Command *SmallShell::CreateCommand(const char *cmd_line) {
@@ -114,4 +114,11 @@ void SmallShell::executeCommand(const char *cmd_line) {
     // Command* cmd = CreateCommand(cmd_line);
     // cmd->execute();
     // Please note that you must fork smash process for some commands (e.g., external commands....)
+}
+
+void JobsList::addJob(Command *cmd, bool isStopped) {
+    int job_id = 1;
+    if (!jobs_list.empty()) job_id = jobs_list.back().job_id + 1;
+    pid_t child_pid = fork();
+
 }
