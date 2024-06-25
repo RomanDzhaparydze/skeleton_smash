@@ -11,6 +11,7 @@ using namespace std;
 
 #define COMMAND_MAX_LENGTH (200)
 #define COMMAND_MAX_ARGS (20)
+#define MAX_BUFFER_SIZE (4096)
 
 
 class Command {
@@ -126,10 +127,10 @@ public:
             command_args[0] = *plastPwd;
         };
 
-        char curr_dir[COMMAND_MAX_LENGTH];
+        char curr_dir[MAX_BUFFER_SIZE];
         getcwd(curr_dir, sizeof(curr_dir));
 
-        if (chdir(command_args[0]) != 0) {
+        if (chdir(command_args[0].c_str()) != 0) {
             perror("smash error: chdir failed");
             return;
         }
@@ -145,7 +146,7 @@ public:
     virtual ~GetCurrDirCommand() {}
 
     void execute() override {
-        char BUFFER[100000];
+        char BUFFER[MAX_BUFFER_SIZE];
         if(getcwd(BUFFER, sizeof(BUFFER))!= NULL) {
             cout << BUFFER << endl;
         }
@@ -167,11 +168,17 @@ class JobsList;
 
 class QuitCommand : public BuiltInCommand {
 // TODO: Add your data members public:
-    QuitCommand(const char *cmd_line, JobsList *jobs);
+    JobsList * jobs;
+    QuitCommand(const char *cmd_line, JobsList *jobs): BuiltInCommand(cmd_line), jobs(jobs) {};
 
     virtual ~QuitCommand() {}
 
-    void execute() override;
+    void execute() override {
+        if (command_args.at(0).compare("kill") == 0){
+            jobs->killAllJobs();
+        }
+        exit(0);
+    }
 };
 
 
