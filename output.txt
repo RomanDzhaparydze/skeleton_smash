@@ -1,0 +1,12 @@
+smash> smash0> smash1> smash> smash pid is 52454
+smash> /Users/student/Desktop
+smash> smash> /Users/student
+smash> smash> /Users/student/Desktop
+smash> smash> /Users/student
+smash> smash> smash> smash> [1] sleep     10&
+[2] sleep 200&
+[3] sleep 300&
+smash> smash> smash> smash> sending SIGKILL signal to 3 jobs:
+52455: sleep     10&
+52456: sleep 200&
+52457: sleep 300&
