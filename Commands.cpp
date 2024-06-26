@@ -74,14 +74,13 @@ void _removeBackgroundSign(char *cmd_line) {
     cmd_line[str.find_last_not_of(WHITESPACE, idx) + 1] = 0;
 }
 
-// TODO: Add your implementation for classes in Commands.h 
+//
+//
+SmallShell::SmallShell() : job_list_of_shell(new JobsList()), lastPwd(nullptr), foreground_pid(-1) {}
 
-SmallShell::SmallShell() {
-// TODO: add your implementation
-}
 
 SmallShell::~SmallShell() {
-// TODO: add your implementation
+    free(lastPwd);
 }
 
 /* Creates and returns a pointer to Command class which matches the given command line (cmd_line)
@@ -117,6 +116,16 @@ Command *SmallShell::CreateCommand(const char *cmd_line) {
         firstWord = cmd_s.substr(0, cmd_s.find_first_of(" \n"));
     }
 
+    size_t pos_of_small_redir = cmd_s.find('<');
+    if (pos_of_small_redir != string::npos) {
+        return new RedirectionCommand(cmd_line);
+    }
+
+    size_t pos_of_pipe = cmd_s.find('|');
+    if (pos_of_pipe != string::npos) {
+        return new PipeCommand(cmd_line);
+    }
+
 
     if(firstWord.compare("chprompt") == 0){
         return new ChPromptCommand(cmd_line);
@@ -138,12 +147,16 @@ Command *SmallShell::CreateCommand(const char *cmd_line) {
         return new aliasCommand(cmd_line, alias_map);
     } else if (firstWord.compare("unalias") == 0) {
         return new unaliasCommand(cmd_line, alias_map);
-    } else {
+    } else if (firstWord.compare("listdir") == 0) {
+        return new ListDirCommand(cmd_line);
+    } else if (firstWord.compare("getuser") == 0) {
+        return new GetUserCommand(cmd_line);
+    } else if (firstWord.compare("watch") == 0) {
+        return new WatchCommand(cmd_line);
+    }  else {
         // TODO: call default shell to execute the command
         return new ExternalCommand(cmd_line);
     }
-
-    return nullptr;
 }
 
 void SmallShell::executeCommand(const char *cmd_line) {
@@ -154,6 +167,7 @@ void SmallShell::executeCommand(const char *cmd_line) {
     // Please note that you must fork smash process for some commands (e.g., external commands....)
     cout << SmallShell::curr_prompt << ">" << endl;
     Command* cmd = CreateCommand(cmd_line);
+    setForegroundPid(-1);
     cmd->execute();
 }
 
@@ -248,7 +262,43 @@ Command::Command(const char *cmd_line) : command_str(cmd_line) {
     istringstream stream(cmd_line);
     string word;
 
+    if (stream >> word) {
+        command_name = word;
+    }
     while (stream >> word) command_args.push_back(word);
 
     free(new_cmd);
+}
+
+RedirectionCommand::RedirectionCommand(const char *cmd_line) : Command(cmd_line) {
+    isBackground = false;
+
+    size_t pos_of_big_redir = command_str.find(">>");
+    if (pos_of_big_redir != std::string::npos) {
+        isAppend = true;
+        file_name = _trim(command_str.substr(pos_of_big_redir + 2));
+        command_name = _trim(command_str.substr(0, pos_of_big_redir));
+    }
+    else {
+        pos_of_big_redir = command_str.find('>');
+        isAppend = false;
+        file_name = _trim(command_str.substr(pos_of_big_redir + 1));
+        command_name = _trim(command_str.substr(0, pos_of_big_redir));
+    }
+}
+
+PipeCommand::PipeCommand(const char *cmd_line) : Command(cmd_line) {
+    size_t pos_of_pipe_err = command_str.find("|&");
+    if (pos_of_pipe_err != string::npos) {
+        isErr = true;
+        command_name_1 = _trim(command_str.substr(0, pos_of_pipe_err));
+        command_name_2 = _trim(command_str.substr(pos_of_pipe_err+2));
+    }
+    else {
+        pos_of_pipe_err = command_str.find('|');
+        isErr = false;
+        command_name_1 = _trim(command_str.substr(0, pos_of_pipe_err));
+        command_name_2 = _trim(command_str.substr(pos_of_pipe_err+1));
+    }
+
 }

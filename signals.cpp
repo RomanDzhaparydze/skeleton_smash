@@ -6,5 +6,14 @@
 using namespace std;
 
 void ctrlCHandler(int sig_num) {
-    // TODO: Add your implementation
+    cout << "smash: got ctrl-C" << endl;
+    SmallShell& smallShell = SmallShell::getInstance();
+    pid_t foreground_pid = smallShell.getForegroundPid();
+    if (foreground_pid != -1) {
+        if (kill(foreground_pid, SIGKILL) == -1) {
+            perror("smash error: kill failed");
+        } else {
+            cout << "smash: process " << foreground_pid << " was killed" << endl;
+        }
+    }
 }
