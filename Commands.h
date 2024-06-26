@@ -317,7 +317,6 @@ public:
 
 static set<string> reserved_keywords = {
         "chprompt", "showpid", "pwd", "cd", "jobs", "fg", "quit", "kill", "alias", "unalias", "listdir", "getuser", "watch",
-        "chprompt&", "showpid&", "pwd&", "cd&", "jobs&", "fg&", "quit&", "kill&", "alias&", "unalias&", "listdir&", "getuser&", "watch&"
 };
 
 static regex regex_exp_for_name("^([a-zA-Z0-9_]+)='([^']*)'$");
