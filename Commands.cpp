@@ -167,9 +167,8 @@ void SmallShell::executeCommand(const char *cmd_line) {
     //Command* cmd = CreateCommand(cmd_line);
     //cmd->execute();
     // Please note that you must fork smash process for some commands (e.g., external commands....)
-    cout << curr_prompt << ">";
     Command* cmd = CreateCommand(cmd_line);
-    setForegroundPid(-1);
+    setForegroundPid(getpid());
     cmd->execute();
 }
 
@@ -203,7 +202,7 @@ void JobsList::printJobsList() {
 
 void JobsList::killAllJobs() {
     for (JobEntry* job : jobs_list) {
-        if (kill(job->job_id, SIGKILL) != 0) perror("smash error: kill failed");
+        if (kill(job->job_pid, SIGKILL) != 0) perror("smash error: kill failed");
     }
     jobs_list.clear();
 }

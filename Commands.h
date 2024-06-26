@@ -507,7 +507,8 @@ public:
 
             if (command_name.find('*') == string::npos && command_name.find('?') == string::npos) {
                 execvp(argv[0], const_cast<char* const*>(argv.data()));
-            } else {
+            } 
+            else {
                 execl("/bin/bash", "bash", "-c", command_str.c_str(), nullptr);
             }
             perror("smash error: exec failed");
