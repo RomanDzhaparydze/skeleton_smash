@@ -199,21 +199,7 @@ public:
     }
 };
 
-class QuitCommand : public BuiltInCommand {
-// TODO: Add your data members
-public:
-    JobsList * jobs;
-    QuitCommand(const char *cmd_line, JobsList *jobs): BuiltInCommand(cmd_line), jobs(jobs) {};
 
-    virtual ~QuitCommand() = default;
-
-    void execute() override {
-        if (command_args.at(0).compare("kill") == 0){
-            jobs->killAllJobs();
-        }
-        exit(0);
-    }
-};
 
 class KillCommand : public BuiltInCommand {
     // TODO: Add your data members
@@ -762,6 +748,27 @@ public:
 
             }
         }
+    }
+};
+
+class QuitCommand : public BuiltInCommand {
+// TODO: Add your data members
+public:
+    JobsList * jobs;
+    QuitCommand(const char *cmd_line, JobsList *jobs): BuiltInCommand(cmd_line), jobs(jobs) {};
+
+    virtual ~QuitCommand() = default;
+
+    void execute() override {
+        if (command_args.at(0).compare("kill") == 0){
+            vector<JobsList::JobEntry *> jobs_list = jobs->getJobsList();
+            cout << "smash: sending SIGKILL signal to " << jobs_list.size() << " jobs:" << endl;
+            for (auto &job : jobs_list) {
+                cout << job->job_pid << ": " << job->command->getCommandStr() << endl;
+            }
+            jobs->killAllJobs();
+        }
+        exit(0);
     }
 };
 #endif //SMASH_COMMAND_H_
