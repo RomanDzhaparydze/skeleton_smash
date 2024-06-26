@@ -16,6 +16,7 @@
 #include <csignal>
 #include <cstdlib>
 #include <cstdio>
+#include <fcntl.h>
 
 using namespace std;
 
@@ -277,15 +278,15 @@ public:
             }
 
             if (S_ISREG(dir_member_stat.st_mode)) {
-                files.push_back("file: " + dir_member->d_name);
+                files.push_back("file: " + string(dir_member->d_name));
             } else if (S_ISDIR(dir_member_stat.st_mode)) {
-                not_files.push_back("directory: " + dir_member->d_name);
+                not_files.push_back("directory: " + string(dir_member->d_name));
             } else if (S_ISLNK(dir_member_stat.st_mode)) {
                 char where_link_points_to[MAX_BUFFER_SIZE];
                 ssize_t len = readlink(path_with_name.c_str(), where_link_points_to, sizeof(where_link_points_to) - 1);
                 if (len != -1) {
                     where_link_points_to[len] = '\0';
-                    not_files.push_back("link: " + dir_member->d_name + " -> " + string(where_link_points_to));
+                    not_files.push_back("link: " + string(dir_member->d_name) + " -> " + string(where_link_points_to));
                 } else {
                     perror("smash error: readlink failed");
                     closedir(dir);
