@@ -10,6 +10,7 @@
 #include <regex>
 #include "dirent.h"
 #include <sys/types.h>
+#include <sys/wait.h>
 #include <pwd.h>
 #include <grp.h>
 #include <sys/stat.h>
@@ -25,6 +26,7 @@ using namespace std;
 #define COMMAND_MAX_ARGS (20)
 #define MAX_BUFFER_SIZE (4096)
 
+extern string curr_prompt;
 
 class Command {
 protected:
@@ -422,7 +424,6 @@ public:
     }
 };
 
-
 class SmallShell {
 private:
     JobsList * job_list_of_shell;
@@ -432,7 +433,7 @@ private:
     SmallShell();
 
 public:
-    static std::string curr_prompt;
+//    static string curr_prompt;
     Command *CreateCommand(const char *cmd_line);
 
     SmallShell(SmallShell const &) = delete; // disable copy ctor
@@ -468,19 +469,17 @@ public:
 
 class ChPromptCommand : public BuiltInCommand {
 public:
-    explicit ChPromptCommand(const char* cmd_line) : BuiltInCommand(cmd_line) {};
+    explicit ChPromptCommand(const char* cmd_line) : BuiltInCommand(cmd_line) {}
     void execute() override {
         if(command_args.empty())
         {
-            SmallShell::curr_prompt = "smash";
+            curr_prompt = "smash";
         } else {
-            SmallShell::curr_prompt = command_args[0];
+            curr_prompt = command_args[0];
         }
 
     }
     virtual ~ChPromptCommand() {}
-private:
-
 
 };
 
