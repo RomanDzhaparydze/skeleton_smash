@@ -194,6 +194,7 @@ public:
     virtual ~JobsCommand() = default;
 
     void execute() override {
+        jobs->removeFinishedJobs();
         jobs->printJobsList();
     
     }
