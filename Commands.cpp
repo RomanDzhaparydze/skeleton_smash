@@ -261,7 +261,7 @@ Command::Command(const char *cmd_line) : command_str(cmd_line) {
     char* new_cmd = strdup(cmd_line);
     if (isBackground) _removeBackgroundSign(new_cmd);
 
-    istringstream stream(cmd_line);
+    istringstream stream(new_cmd);
     string word;
 
     if (stream >> word) {
