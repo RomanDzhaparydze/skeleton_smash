@@ -1,5 +1,4 @@
-smash> here
-1
+smash> 1
 22
 333
 4444
@@ -8,17 +7,14 @@ smash> here
 7777777
 88888888
 999999999
-smash> here
-88888888
+smash> 88888888
 999999999
-smash> here
-55555
+smash> 55555
 666666
 7777777
 88888888
 999999999
-smash> here
-1
+smash> 1
 22
 333
 4444
@@ -27,8 +23,7 @@ smash> here
 7777777
 88888888
 999999999
-smash> here
-1
+smash> 1
 22
 333
 4444
@@ -37,5 +32,4 @@ smash> here
 7777777
 88888888
 999999999
-smash> here
-smash> 
+smash> smash> 

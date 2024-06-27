@@ -169,7 +169,7 @@ void SmallShell::executeCommand(const char *cmd_line) {
     // Please note that you must fork smash process for some commands (e.g., external commands....)
     job_list_of_shell->removeFinishedJobs();
     Command* cmd = CreateCommand(cmd_line);
-    setForegroundPid(getpid());
+    setForegroundPid(-1);
     cmd->execute();
 }
 

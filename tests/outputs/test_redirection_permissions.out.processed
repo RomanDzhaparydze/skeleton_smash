@@ -1,13 +1,5 @@
-smash> here
-abc > a.txt
-smash> here
-smash> here
-abc >> a.txt
-smash> here
-smash> here
-abc >> b.txt
-smash> here
-smash> here
-abc >> b.txt
-smash> here
-smash> 
+smash> abc > a.txt
+smash> smash> abc >> a.txt
+smash> smash> abc >> b.txt
+smash> smash> abc >> b.txt
+smash> smash> 
