@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 smash> smash> smash> smash> smash> smash> sleep 300& 2
 smash: got ctrl-C
 3195
 smash: process 2 was killed
+=======
+smash> smash> smash> smash> smash> smash> sleep 300& 6305
+>>>>>>> 142c7a0f09768c3a1aa2d53ad2ce696c6731528b

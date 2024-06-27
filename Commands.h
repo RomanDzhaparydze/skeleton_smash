@@ -62,16 +62,6 @@ public:
     virtual ~BuiltInCommand() = default;
 };
 
-
-
-
-
-
-
-
-
-
-
 class ChangeDirCommand : public BuiltInCommand {
 private:
     char **plastPwd;
@@ -130,7 +120,8 @@ public:
     virtual ~ShowPidCommand() = default;
 
     void execute() override {
-        cout << getpid() << endl;
+        int pid = getpid();
+        cout << curr_prompt << "> smash pid is "<< pid << endl;
     }
 };
 
@@ -746,7 +737,6 @@ public:
                 perror("smash error: waitpid failed");
             }
             smallShell.setForegroundPid(-1);
-
         }
     }
 };
