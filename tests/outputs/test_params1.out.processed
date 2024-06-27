@@ -1,6 +1,11 @@
 smash> submitted by Eran
+<<<<<<< HEAD
 smash> Two> Name1> Name2> 21428
 Name2> 21428
+=======
+smash> Two> Name1> Name2> 4798
+Name2> 4798
+>>>>>>> cb4b71cac6f4f7bf5dea8bf463920886c784dbab
 Name2> /tmp/smash_test
 Name2> /tmp/smash_test
 Name2> smash> 

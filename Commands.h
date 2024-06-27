@@ -744,10 +744,9 @@ public:
             int status;
             if (waitpid(pid, &status, WUNTRACED) == -1) {
                 perror("smash error: waitpid failed");
-
-                smallShell.setForegroundPid(-1);
-
             }
+            smallShell.setForegroundPid(-1);
+
         }
     }
 };

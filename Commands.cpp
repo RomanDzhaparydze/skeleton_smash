@@ -156,7 +156,6 @@ Command *SmallShell::CreateCommand(const char *cmd_line) {
     } else if (firstWord.compare("watch") == 0) {
         return new WatchCommand(cmd_line);
     }  else {
-        // TODO: call default shell to execute the command
         return new ExternalCommand(cmd_line);
     }
 }
