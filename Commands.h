@@ -762,7 +762,7 @@ public:
     virtual ~QuitCommand() = default;
 
     void execute() override {
-        if (command_args.at(0).compare("kill") == 0){
+        if (!command_args.empty() && command_args.at(0).compare("kill") == 0){
             vector<JobsList::JobEntry *> jobs_list = jobs->getJobsList();
             cout << "smash: sending SIGKILL signal to " << jobs_list.size() << " jobs:" << endl;
             for (auto &job : jobs_list) {

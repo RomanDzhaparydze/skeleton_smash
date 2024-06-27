@@ -1,0 +1,6 @@
+smash error: exec failed: No such file or directory
+smash error: exec failed: No such file or directory
+smash error: exec failed: No such file or directory
+smash error: exec failed: No such file or directory
+cat: my_pid: No such file or directory
+rm: cannot remove 'my_pid': No such file or directory

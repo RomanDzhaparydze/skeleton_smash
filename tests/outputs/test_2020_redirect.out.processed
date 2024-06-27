@@ -1,0 +1,13 @@
+smash> smash> smash> smash> test_redirect> new
+smash> smash> again_redirect> new
+smash> smash> test_redirect>> new
+smash> smash> 10164
+smash> smash> 10164
+smash> smash> 10164
+smash> smash> smash> smash> [1] sleep 100&
+smash> smash> smash> smash> smash> smash> smash> smash> smash> smash> smash> smash> before
+smash> smash> smash> smash> smash> smash> smash> smash> smash> smash> smash> smash> smash> smash> smash> smash> smash> smash> smash> 0
+2
+end: 4
+smash> smash> smash> smash> smash: sending SIGKILL signal to 1 jobs:
+2: sleep 100&
