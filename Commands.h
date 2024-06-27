@@ -677,13 +677,12 @@ public:
         smallShell.setForegroundPid(curr_job->job_pid);
 
         cout << curr_job->command->getCommandStr() << " " << curr_job->job_pid << endl;
-        cout << "to kill pid - " << smallShell.getForegroundPid() << endl;
-        cout << "pid of shell - " << getpid() << endl;
         int status;
         if (waitpid(curr_job->job_pid, &status, WUNTRACED) == -1) {
             perror("smash error: waitpid failed");
         }
         smallShell.setForegroundPid(-1);
+        cout << "got to the end" << endl;
 
         jobs_list->removeJobById(id);
     }
