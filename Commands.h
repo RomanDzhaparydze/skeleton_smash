@@ -121,7 +121,7 @@ public:
 
     void execute() override {
         int pid = getpid();
-        cout << curr_prompt << "> smash pid is "<< pid << endl;
+        cout << "smash pid is "<< pid << endl;
     }
 };
 
