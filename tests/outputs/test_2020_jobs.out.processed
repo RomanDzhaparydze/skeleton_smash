@@ -52,4 +52,5 @@ smash> smash> [1] sleep 100&
 [10] sleep 1001&
 smash> sleep 1001& 4
 smash: got ctrl-C
+3076
 smash: process 4 was killed

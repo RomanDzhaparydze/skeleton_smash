@@ -10,7 +10,6 @@ void ctrlCHandler(int sig_num) {
     SmallShell& smallShell = SmallShell::getInstance();
     pid_t foreground_pid = smallShell.getForegroundPid();
     if (foreground_pid != -1) {
-        cout << getpid() << endl;
         if (kill(foreground_pid, SIGKILL) == -1) {
             perror("smash error: kill failed");
         } else {
