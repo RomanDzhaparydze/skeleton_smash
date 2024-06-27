@@ -1,9 +1,9 @@
 smash> smash> smash> smash> test_redirect> new
 smash> smash> again_redirect> new
 smash> smash> test_redirect>> new
-smash> smash> 4558
-smash> smash> 4558
-smash> smash> 4558
+smash> smash> smash pid is 1
+smash> smash> smash pid is 1
+smash> smash> smash pid is 1
 smash> smash> smash> smash> [1] sleep 100&
 smash> smash> smash> smash> smash> smash> smash> smash> smash> smash> smash> smash> before
 smash> smash> smash> smash> smash> smash> smash> smash> smash> smash> smash> smash> smash> smash> smash> smash> smash> smash> smash> 0
