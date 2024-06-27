@@ -156,7 +156,6 @@ Command *SmallShell::CreateCommand(const char *cmd_line) {
     } else if (firstWord.compare("watch") == 0) {
         return new WatchCommand(cmd_line);
     }  else {
-        // TODO: call default shell to execute the command
         return new ExternalCommand(cmd_line);
     }
 }
@@ -169,7 +168,7 @@ void SmallShell::executeCommand(const char *cmd_line) {
     // Please note that you must fork smash process for some commands (e.g., external commands....)
     job_list_of_shell->removeFinishedJobs();
     Command* cmd = CreateCommand(cmd_line);
-    setForegroundPid(getpid());
+    setForegroundPid(-1);
     cmd->execute();
 }
 
