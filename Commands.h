@@ -678,6 +678,7 @@ public:
 
         cout << curr_job->command->getCommandStr() << " " << curr_job->job_pid << endl;
         cout << "to kill pid - " << smallShell.getForegroundPid() << endl;
+        cout << "pid of shell - " << getpid() << endl;
         int status;
         if (waitpid(curr_job->job_pid, &status, WUNTRACED) == -1) {
             perror("smash error: waitpid failed");

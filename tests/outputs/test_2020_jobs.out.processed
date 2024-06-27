@@ -50,5 +50,9 @@ smash> smash> [1] sleep 100&
 [8] sleep 800&
 [9] sleep 900&
 [10] sleep 1001&
-smash> sleep 1001& 18239
-to kill pid - 18239
+smash> sleep 1001& 4
+to kill pid - 4
+pid of shell - 23174
+smash: got ctrl-C
+what is really killed4
+smash: process 4 was killed

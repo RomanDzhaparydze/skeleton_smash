@@ -1,2 +1,6 @@
-smash> smash> smash> smash> smash> smash> sleep 300& 17843
-to kill pid - 17843
+smash> smash> smash> smash> smash> smash> sleep 300& 2
+to kill pid - 2
+pid of shell - 23305
+smash: got ctrl-C
+what is really killed2
+smash: process 2 was killed
