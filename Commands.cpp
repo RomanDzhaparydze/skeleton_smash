@@ -129,13 +129,18 @@ Command *SmallShell::CreateCommand(const char *cmd_line) {
     }
 
     string cmd_line_str(cmd_line);
+    // cout << cmd_line_str << endl;
 
 
     if(firstWord.compare("chprompt") == 0){
         return new ChPromptCommand(cmd_line);
     } else if (firstWord.compare("pwd") == 0){
         return new GetCurrDirCommand(cmd_line); 
-    } else if (firstWord.compare("showpid") == 0) {
+    } else if (cmd_line_str.find('>') != std::string::npos){
+        return new RedirectionCommand(cmd_line);
+    } else if (cmd_line_str.find('|') != std::string::npos){
+        return new PipeCommand(cmd_line);
+    }  else if (firstWord.compare("showpid") == 0) {
         return new ShowPidCommand(cmd_line);
     } else if (firstWord.compare("cd") == 0) {
         return new ChangeDirCommand(cmd_line, &lastPwd);
@@ -157,10 +162,6 @@ Command *SmallShell::CreateCommand(const char *cmd_line) {
         return new GetUserCommand(cmd_line);
     } else if (firstWord.compare("watch") == 0) {
         return new WatchCommand(cmd_line);
-    } else if (cmd_line_str.find('>') != std::string::npos){
-        return new RedirectionCommand(cmd_line);
-    } else if (cmd_line_str.find('|') != std::string::npos){
-        return new PipeCommand(cmd_line);
     } else {
         return new ExternalCommand(cmd_line);
     }

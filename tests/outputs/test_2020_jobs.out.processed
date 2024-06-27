@@ -82,7 +82,7 @@ smash> [1] sleep 40&
 [10] sleep 1000&
 smash> sleep 1000& : 10
 smash: got ctrl-C
-smash: process 311260260 was killed
+smash: process 262610260260 was killed
 smash> [1] sleep 40&
 [26] sleep 2600&
 [4] sleep 400&
@@ -95,14 +95,14 @@ smash> smash: got ctrl-C
 [2626] sleep 262600&
 [260] sleep 26000&
 smash> smash: got ctrl-C
-smash: process 312602601 was killed
+smash: process 126 was killed
 smash> [1] sleep 40&
 [26] sleep 2600&
 [4] sleep 400&
 [2626] sleep 262600&
 [260] sleep 26000&
 smash> smash: got ctrl-C
-smash: process 13 was killed
+smash: process 260102602626 was killed
 smash> smash> smash: got ctrl-C
 smash: got ctrl-C
 smash: got ctrl-C
@@ -113,11 +113,11 @@ smash: got ctrl-C
 [2626] sleep 262600&
 [260] sleep 26000&
 smash> smash: got ctrl-C
-smash: process 14 was killed
+smash: process 10010260 was killed
 smash> smash: got ctrl-C
-smash: process 12626 was killed
+smash: process 1040 was killed
 smash> smash: got ctrl-C
-smash: process 1260 was killed
+smash: process 101261 was killed
 smash> smash> smash: got ctrl-C
 smash> smash: got ctrl-C
 smash> smash: got ctrl-C
@@ -145,13 +145,13 @@ smash> [1] sleep 40&
 [4] sleep 400&
 [2626] sleep 262600&
 [260] sleep 26000&
-smash> signal number 260 was sent to pid 3112603
+smash> signal number 260 was sent to pid 2626102600
 smash> smash> [26] sleep 2600&
 [4] sleep 400&
 [2626] sleep 262600&
 [260] sleep 26000&
-smash> signal number 260 was sent to pid 3112604
-smash> signal number 260 was sent to pid 311260260
+smash> signal number 260 was sent to pid 2626102601
+smash> signal number 260 was sent to pid 2626102603
 smash> smash> smash: got ctrl-C
 smash> smash: got ctrl-C
 [2626] sleep 262600&
@@ -169,21 +169,21 @@ smash> [2626] sleep 262600&
 [260] sleep 26000&
 smash> sleep 26000& : 260
 smash: got ctrl-C
-smash: process 3112608 was killed
+smash: process 2626102602626 was killed
 smash> [2626] sleep 262600&
 smash> sleep 262600& : 2626
 smash: got ctrl-C
-smash: process 31126010 was killed
+smash: process 2626102604 was killed
 smash> smash> smash> smash: got ctrl-C
 smash> smash> [1] sleep 101010&
 smash> smash: got ctrl-C
-smash: process 102608 was killed
+smash: process 1082626 was killed
 smash> smash: got ctrl-C
-smash: process 102602626 was killed
+smash: process 10843 was killed
 smash> smash> [1] sleep 101010&
 [26] sleep 40&
 smash> sleep 40& : 26
 smash: got ctrl-C
-smash: process 81260 was killed
+smash: process 1082600 was killed
 smash> smash: sending SIGKILL signal to 1 jobs:
-1026010: sleep 101010&
+108261: sleep 101010&

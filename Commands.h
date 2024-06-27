@@ -487,9 +487,10 @@ public:
                 execvp(argv[0], const_cast<char* const*>(argv.data()));
             } 
             else {
+                cout << "ccc" << endl;
                 execl("/bin/bash", "bash", "-c", command_str.c_str(), nullptr);
             }
-            perror("smash error: exec failed");
+            perror("smash error: exec failed ccc");
             exit(1);
         }
         else {
@@ -598,7 +599,7 @@ public:
             argv.push_back(nullptr);
 
             execvp(argv[0], const_cast<char* const*>(argv.data()));
-            perror("smash error: exec failed");
+            perror("smash error: exec failed aaa");
             exit(1);
         }
         pid_t pid2 = fork();
@@ -622,7 +623,7 @@ public:
             argv.push_back(nullptr);
 
             execvp(argv[0], const_cast<char* const*>(argv.data()));
-            perror("smash error: exec failed");
+            perror("smash error: exec failed bbb");
             exit(1);
         }
         else {
@@ -711,40 +712,56 @@ public:
     virtual ~RedirectionCommand() = default;
 
     void execute() override {
-        cout << "starting to execute redirection" << endl;
+
         pid_t pid = fork();
-        if (pid == -1) {
+
+        if (pid < 0) {
             perror("smash error: fork failed");
             return;
         }
         else if (pid == 0) {
             // child process 
             setpgrp();
-            close(1);
             int success;
-            cout << file_name << endl;
             if (isAppend) success = open(file_name.c_str(), O_RDWR | O_CREAT | O_APPEND, 0644);
             else success = open(file_name.c_str(), O_RDWR | O_CREAT | O_TRUNC, 0644);
-
             if (success == -1) {
                 perror("smash error: open failed");
                 exit(1);
             }
-
-            istringstream stream(command_name);
-            string word;
-            vector<const char*> argv;
-            while (stream >> word) {
-                argv.push_back(word.c_str());
+            // redirecting the output
+            if (dup2(success, STDOUT_FILENO) == -1) {
+                perror("smash error: dup2 failed");
+                close(success);
+                exit (1);
+            }
+            // close(success);
+            // istringstream stream(command_name);
+            // string word;
+            // vector<const char*> argv;
+            // while (stream >> word) {
+            //     argv.push_back(word.c_str());
+            // }
+            // argv.push_back(nullptr);
+            
+            // execvp(argv[0], const_cast<char* const*>(argv.data()));
+            // perror("smash error: exec failed ggg");
+            // exit(1);
+            std::istringstream cmd_stream(command_name);
+            std::string word;
+            std::vector<char *> argv;
+            while (cmd_stream >> word) {
+                argv.push_back(strdup(word.c_str()));
             }
             argv.push_back(nullptr);
 
-            execvp(argv[0], const_cast<char* const*>(argv.data()));
+            // Execute the command
+            execvp(argv[0], argv.data());
             perror("smash error: exec failed");
-            exit(1);
         }
         else {
             // smash process
+            // cout << isAppend << endl << file_name << endl;
             SmallShell& smallShell = SmallShell::getInstance();
             smallShell.setForegroundPid(pid);
 
