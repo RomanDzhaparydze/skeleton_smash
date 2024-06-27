@@ -121,7 +121,7 @@ public:
 
     void execute() override {
         int pid = getpid();
-        cout << curr_prompt << "> smash pid is "<< pid << endl;
+        cout << "smash pid is "<< pid << endl;
     }
 };
 
@@ -651,6 +651,7 @@ public:
     virtual ~ForegroundCommand() {}
 
     void execute() override {
+        // parsing 
         if (command_args.empty() && jobs_list->getJobsList().empty()) {
             cerr << "smash error: fg: jobs list is empty" << endl;
             return;
@@ -660,6 +661,7 @@ public:
             return;
         }
         bool isIdGiven = command_args.size() == 1;
+        // cout << "ID given" << isIdGiven << endl;
         JobsList::JobEntry* curr_job;
         int id;
         if (isIdGiven) {
@@ -669,22 +671,32 @@ public:
                 cerr << "smash error: fg: job-id " << id << " does not exist" << endl;
                 return;
             }
-        }
-        else {
+        } else {
             curr_job = jobs_list->getLastJob(&id);
         }
+
         SmallShell& smallShell = SmallShell::getInstance();
         smallShell.setForegroundPid(curr_job->job_pid);
-
-        cout << curr_job->command->getCommandStr() << " " << curr_job->job_pid << endl;
-        int status;
-        if (waitpid(curr_job->job_pid, &status, WUNTRACED) == -1) {
-            perror("smash error: waitpid failed");
+        // changed job_pid to job_id bacause it supposed to be like that in tests
+        cout << curr_job->command->getCommandStr() << " : " << curr_job->job_id << endl;
+        // cout << "to kill pid - " << smallShell.getForegroundPid() << endl;
+        // cout << "pid of shell - " << getpid() << endl;
+        int job_pid = curr_job->job_pid;
+        if (kill(job_pid, SIGCONT) == -1) {
+            perror("smash error: kill failed");
+            return;
         }
-        smallShell.setForegroundPid(-1);
-        cout << "got to the end" << endl;
+        // int status;
 
-        jobs_list->removeJobById(id);
+        if (waitpid(job_pid, NULL, WUNTRACED) == -1) {
+            perror("smash error: waitpid failed");
+            // cout << "here" << endl;
+        }
+        // cout << "here1" << endl;
+        jobs_list->removeJobById(job_pid);
+        // cout << "here2" << endl;
+        smallShell.setForegroundPid(-1);
+        // cout << "here3" << endl;
     }
 };
 
@@ -699,18 +711,20 @@ public:
     virtual ~RedirectionCommand() = default;
 
     void execute() override {
-
+        cout << "starting to execute redirection" << endl;
         pid_t pid = fork();
         if (pid == -1) {
             perror("smash error: fork failed");
             return;
         }
         else if (pid == 0) {
+            // child process 
             setpgrp();
             close(1);
             int success;
-            if (isAppend) success = open(file_name.c_str(), O_WRONLY | O_CREAT | O_APPEND, 0644);
-            else success = open(file_name.c_str(), O_WRONLY | O_CREAT | O_TRUNC, 0644);
+            cout << file_name << endl;
+            if (isAppend) success = open(file_name.c_str(), O_RDWR | O_CREAT | O_APPEND, 0644);
+            else success = open(file_name.c_str(), O_RDWR | O_CREAT | O_TRUNC, 0644);
 
             if (success == -1) {
                 perror("smash error: open failed");
@@ -730,6 +744,7 @@ public:
             exit(1);
         }
         else {
+            // smash process
             SmallShell& smallShell = SmallShell::getInstance();
             smallShell.setForegroundPid(pid);
 
@@ -738,7 +753,6 @@ public:
                 perror("smash error: waitpid failed");
             }
             smallShell.setForegroundPid(-1);
-
         }
     }
 };
@@ -749,8 +763,7 @@ public:
     JobsList * jobs;
     QuitCommand(const char *cmd_line, JobsList *jobs): BuiltInCommand(cmd_line), jobs(jobs) {};
 
-    virtual ~QuitCommand() = default;
-
+    virtual ~QuitCommand() = default; 
     void execute() override {
         if (!command_args.empty() && command_args.at(0).compare("kill") == 0){
             vector<JobsList::JobEntry *> jobs_list = jobs->getJobsList();

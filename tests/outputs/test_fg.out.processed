@@ -1,3 +1,2 @@
-smash> smash> smash> sleep 1& 25791
-to kill pid - 25791
-pid of shell - 25788
+smash> smash> smash> sleep 1& : 2
+smash> smash> 

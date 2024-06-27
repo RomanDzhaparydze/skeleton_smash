@@ -1,6 +1,16 @@
-smash> smash> smash> smash> smash> smash> sleep 300& 2
-to kill pid - 2
-pid of shell - 25721
+smash> smash> smash> smash> smash> smash> sleep 600& : 6
 smash: got ctrl-C
-what is really killed2
-smash: process 2 was killed
+smash: process 68688 was killed
+smash> sleep 800& : 8
+smash: got ctrl-C
+smash: process 68686 was killed
+smash> sleep 600& : 6
+smash: got ctrl-C
+smash: process 68687 was killed
+smash> sleep 800& : 8
+smash: got ctrl-C
+smash: process 68689 was killed
+smash> sleep 1000& : 10
+smash: got ctrl-C
+smash: process 68660 was killed
+smash> smash: sending SIGKILL signal to 0 jobs:

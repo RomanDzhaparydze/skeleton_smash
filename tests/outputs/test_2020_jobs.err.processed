@@ -1,1 +1,12 @@
-runner: Timeout, killing child
+smash error: fg: job-id 126 does not exist
+smash error: fg: job-id 126 does not exist
+smash error: fg: job-id 126 does not exist
+smash error: fg: job-id 11 does not exist
+smash error: fg: job-id 11 does not exist
+smash error: fg: job-id 260 does not exist
+smash error: fg: job-id 261 does not exist
+smash error: fg: invalid arguments
+smash error: kill: job-id 1 does not exist
+smash error: fg: job-id 4 does not exist
+smash error: fg: job-id 1 does not exist
+smash error: fg: jobs list is empty

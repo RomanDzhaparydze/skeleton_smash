@@ -1,5 +1,9 @@
-smash> abc > a.txt
-smash> smash> abc >> a.txt
-smash> smash> abc >> b.txt
-smash> smash> abc >> b.txt
-smash> smash> 
+smash> starting to execute redirection
+smash> "-rw-r--r--"
+smash> starting to execute redirection
+smash> "-rw-r--r--"
+smash> starting to execute redirection
+smash> "-rw-r--r--"
+smash> starting to execute redirection
+smash> "-rw-r--r--"
+smash> 

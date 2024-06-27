@@ -128,6 +128,8 @@ Command *SmallShell::CreateCommand(const char *cmd_line) {
         return new PipeCommand(cmd_line);
     }
 
+    string cmd_line_str(cmd_line);
+
 
     if(firstWord.compare("chprompt") == 0){
         return new ChPromptCommand(cmd_line);
@@ -155,7 +157,11 @@ Command *SmallShell::CreateCommand(const char *cmd_line) {
         return new GetUserCommand(cmd_line);
     } else if (firstWord.compare("watch") == 0) {
         return new WatchCommand(cmd_line);
-    }  else {
+    } else if (cmd_line_str.find('>') != std::string::npos){
+        return new RedirectionCommand(cmd_line);
+    } else if (cmd_line_str.find('|') != std::string::npos){
+        return new PipeCommand(cmd_line);
+    } else {
         return new ExternalCommand(cmd_line);
     }
 }
@@ -166,6 +172,7 @@ void SmallShell::executeCommand(const char *cmd_line) {
     //Command* cmd = CreateCommand(cmd_line);
     //cmd->execute();
     // Please note that you must fork smash process for some commands (e.g., external commands....)
+    // std::cout << curr_prompt << "> ";
     job_list_of_shell->removeFinishedJobs();
     Command* cmd = CreateCommand(cmd_line);
     setForegroundPid(-1);
@@ -216,10 +223,10 @@ void JobsList::removeFinishedJobs() {
             delete *it;
             it = jobs_list.erase(it);
         }
-        else it++;
+        else ++it;
     }
-
 }
+
 
 JobsList::JobEntry *JobsList::getJobById(int jobId) {
     for (JobEntry* job : jobs_list) {
@@ -230,14 +237,19 @@ JobsList::JobEntry *JobsList::getJobById(int jobId) {
 
 void JobsList::removeJobById(int jobId) {
     auto it = jobs_list.begin();
+    // cout << "jobhere1" << endl;
     while (it != jobs_list.end()) {
+        // cout << "jobherewhile" << endl;
         if ((*it)->job_id == jobId) {
+            // cout << "jobhere2" << endl;
             delete *it;
             jobs_list.erase(it);
             return;
         }
+        ++it;
     }
 }
+
 
 JobsList::JobEntry *JobsList::getLastJob(int *lastJobId) {
     *lastJobId = jobs_list.back()->job_id;
