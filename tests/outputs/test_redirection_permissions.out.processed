@@ -1,0 +1,5 @@
+smash> abc > a.txt
+smash> smash> abc >> a.txt
+smash> smash> abc >> b.txt
+smash> smash> abc >> b.txt
+smash> smash> 

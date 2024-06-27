@@ -1,0 +1,12 @@
+smash> smash0> smash1> smash> 8204
+smash> /home/student/Documents/HW1/skeleton_smash
+smash> smash> /home/student/Documents/HW1
+smash> smash> /home/student/Documents/HW1/skeleton_smash
+smash> smash> /home/student/Documents/HW1
+smash> smash> smash> smash> [1] sleep     10&
+[2] sleep 200&
+[3] sleep 300&
+smash> smash> smash> smash> smash: sending SIGKILL signal to 3 jobs:
+8205: sleep     10&
+8206: sleep 200&
+8207: sleep 300&

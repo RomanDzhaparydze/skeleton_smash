@@ -1,0 +1,34 @@
+cat: new: No such file or directory
+cat: new: No such file or directory
+cat: new: No such file or directory
+cat: mypid: No such file or directory
+cat: mypid: No such file or directory
+cat: mypid: No such file or directory
+cat: s: No such file or directory
+smash error: kill: invalid arguments
+cat: k: No such file or directory
+smash error: kill: invalid arguments
+cat: t: No such file or directory
+ls: cannot access '>': No such file or directory
+ls: cannot access 'p': No such file or directory
+cat: p: No such file or directory
+ls: cannot access '>': No such file or directory
+ls: cannot access '/dfgdfg/dfgdfg': No such file or directory
+ls: cannot access '>/tmp/smash/test/new': No such file or directory
+cat: new: No such file or directory
+chmod: cannot access 'new': No such file or directory
+ls: cannot access '>': No such file or directory
+ls: cannot access 'new': No such file or directory
+rm: cannot remove 'new': No such file or directory
+smash error: exec failed: No such file or directory
+cat: new: No such file or directory
+rm: cannot remove 'new': No such file or directory
+smash error: exec failed: No such file or directory
+cat: new: No such file or directory
+rm: cannot remove 'new': No such file or directory
+ls: cannot access '>new': No such file or directory
+cat: new: No such file or directory
+ls: cannot access '>': No such file or directory
+ls: cannot access 'test/again': No such file or directory
+cat: test/again: No such file or directory
+cat: sl: No such file or directory
