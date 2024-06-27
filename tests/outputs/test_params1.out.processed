@@ -1,11 +1,6 @@
 smash> submitted by Eran
-<<<<<<< HEAD
-smash> Two> Name1> Name2> 3335
-Name2> 3335
-=======
-smash> Two> Name1> Name2> smash pid is 1
-Name2> smash pid is 1
->>>>>>> 142c7a0f09768c3a1aa2d53ad2ce696c6731528b
+smash> Two> Name1> Name2> Name2> smash pid is 1
+Name2> Name2> smash pid is 1
 Name2> /tmp/smash_test
 Name2> /tmp/smash_test
 Name2> smash> 
