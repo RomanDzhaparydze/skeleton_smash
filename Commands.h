@@ -216,7 +216,8 @@ public:
             cerr << "smash error: kill: invalid arguments" << endl;
             return;
         }
-        int id = stoi(command_args[0].substr(1));
+        int signal = stoi(command_args[0].substr(1));
+        int id = stoi(command_args[1]);
         JobsList::JobEntry* curr_job = jobs->getJobById(id);
         if (curr_job == nullptr) {
             cerr << "smash error: kill: job-id "<< id <<" does not exist" << endl;
