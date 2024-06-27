@@ -661,6 +661,7 @@ public:
             return;
         }
         bool isIdGiven = command_args.size() == 1;
+        // cout << "ID given" << isIdGiven << endl;
         JobsList::JobEntry* curr_job;
         int id;
         if (isIdGiven) {
@@ -710,18 +711,20 @@ public:
     virtual ~RedirectionCommand() = default;
 
     void execute() override {
-
+        cout << "starting to execute redirection" << endl;
         pid_t pid = fork();
         if (pid == -1) {
             perror("smash error: fork failed");
             return;
         }
         else if (pid == 0) {
+            // child process 
             setpgrp();
             close(1);
             int success;
-            if (isAppend) success = open(file_name.c_str(), O_WRONLY | O_CREAT | O_APPEND, 0644);
-            else success = open(file_name.c_str(), O_WRONLY | O_CREAT | O_TRUNC, 0644);
+            cout << file_name << endl;
+            if (isAppend) success = open(file_name.c_str(), O_RDWR | O_CREAT | O_APPEND, 0644);
+            else success = open(file_name.c_str(), O_RDWR | O_CREAT | O_TRUNC, 0644);
 
             if (success == -1) {
                 perror("smash error: open failed");
@@ -741,6 +744,7 @@ public:
             exit(1);
         }
         else {
+            // smash process
             SmallShell& smallShell = SmallShell::getInstance();
             smallShell.setForegroundPid(pid);
 
@@ -749,7 +753,6 @@ public:
                 perror("smash error: waitpid failed");
             }
             smallShell.setForegroundPid(-1);
-
         }
     }
 };
