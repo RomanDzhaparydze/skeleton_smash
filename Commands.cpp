@@ -231,12 +231,16 @@ JobsList::JobEntry *JobsList::getJobById(int jobId) {
 
 void JobsList::removeJobById(int jobId) {
     auto it = jobs_list.begin();
+    // cout << "jobhere1" << endl;
     while (it != jobs_list.end()) {
+        // cout << "jobherewhile" << endl;
         if ((*it)->job_id == jobId) {
+            // cout << "jobhere2" << endl;
             delete *it;
             jobs_list.erase(it);
             return;
         }
+        it++;
     }
 }
 

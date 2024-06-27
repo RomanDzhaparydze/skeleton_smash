@@ -6,10 +6,10 @@
 #include "signals.h"
 
 int main(int argc, char *argv[]) {
-    signal(SIGKILL, ctrlCHandler);
-    // if (signal(SIGINT, ctrlCHandler) == SIG_ERR) {
-    //     perror("smash error: failed to set ctrl-C handler");
-    // }
+    // signal(SIGKILL, ctrlCHandler);
+    if (signal(SIGINT, ctrlCHandler) == SIG_ERR) {
+        perror("smash error: failed to set ctrl-C handler");
+    }
 
     //TODO: setup sig alarm handler
 

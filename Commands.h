@@ -651,6 +651,7 @@ public:
     virtual ~ForegroundCommand() {}
 
     void execute() override {
+        // parsing 
         if (command_args.empty() && jobs_list->getJobsList().empty()) {
             cerr << "smash error: fg: jobs list is empty" << endl;
             return;
@@ -669,21 +670,32 @@ public:
                 cerr << "smash error: fg: job-id " << id << " does not exist" << endl;
                 return;
             }
-        }
-        else {
+        } else {
             curr_job = jobs_list->getLastJob(&id);
         }
+
         SmallShell& smallShell = SmallShell::getInstance();
         smallShell.setForegroundPid(curr_job->job_pid);
-
-        cout << curr_job->command->getCommandStr() << " " << curr_job->job_pid << endl;
-        int status;
-        if (waitpid(curr_job->job_pid, &status, WUNTRACED) == -1) {
-            perror("smash error: waitpid failed");
+        // changed job_pid to job_id bacause it supposed to be like that in tests
+        cout << curr_job->command->getCommandStr() << " : " << curr_job->job_id << endl;
+        // cout << "to kill pid - " << smallShell.getForegroundPid() << endl;
+        // cout << "pid of shell - " << getpid() << endl;
+        int job_pid = curr_job->job_pid;
+        if (kill(job_pid, SIGCONT) == -1) {
+            perror("smash error: kill failed");
+            return;
         }
-        smallShell.setForegroundPid(-1);
+        // int status;
 
-        jobs_list->removeJobById(id);
+        if (waitpid(job_pid, NULL, WUNTRACED) == -1) {
+            perror("smash error: waitpid failed");
+            // cout << "here" << endl;
+        }
+        // cout << "here1" << endl;
+        jobs_list->removeJobById(job_pid);
+        // cout << "here2" << endl;
+        smallShell.setForegroundPid(-1);
+        // cout << "here3" << endl;
     }
 };
 
@@ -737,6 +749,7 @@ public:
                 perror("smash error: waitpid failed");
             }
             smallShell.setForegroundPid(-1);
+
         }
     }
 };
@@ -747,8 +760,7 @@ public:
     JobsList * jobs;
     QuitCommand(const char *cmd_line, JobsList *jobs): BuiltInCommand(cmd_line), jobs(jobs) {};
 
-    virtual ~QuitCommand() = default;
-
+    virtual ~QuitCommand() = default; 
     void execute() override {
         if (!command_args.empty() && command_args.at(0).compare("kill") == 0){
             vector<JobsList::JobEntry *> jobs_list = jobs->getJobsList();
