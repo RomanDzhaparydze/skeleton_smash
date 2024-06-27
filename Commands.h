@@ -675,7 +675,8 @@ public:
         }
         SmallShell& smallShell = SmallShell::getInstance();
         smallShell.setForegroundPid(curr_job->job_pid);
-
+        cout << "here before" << endl;
+        cout << "process to wait pid: " << curr_job->job_pid << endl;
         cout << curr_job->command->getCommandStr() << " " << curr_job->job_pid << endl;
         int status;
         if (waitpid(curr_job->job_pid, &status, WUNTRACED) == -1) {
@@ -683,6 +684,7 @@ public:
         }
         smallShell.setForegroundPid(-1);
 
+        cout << "here after";
         jobs_list->removeJobById(id);
     }
 };
@@ -737,6 +739,7 @@ public:
                 perror("smash error: waitpid failed");
             }
             smallShell.setForegroundPid(-1);
+
         }
     }
 };
