@@ -1,56 +1,13 @@
-smash> here
-smash> smash> here
-smash> here
-test_redirect> new
-smash> here
-smash> here
-again_redirect> new
-smash> here
-smash> here
-test_redirect>> new
-smash> here
-smash> 14106
-smash> here
-smash> 14106
-smash> here
-smash> 14106
-smash> here
-smash> here
-smash> smash> [1] sleep 100&
-smash> here
-smash> smash> here
-smash> smash> here
-smash> here
-smash> here
-smash> here
-smash> here
-smash> here
-smash> here
-smash> here
-before
-smash> here
-smash> here
-smash> here
-smash> here
-smash> here
-smash> here
-smash> here
-smash> here
-smash> here
-smash> here
-smash> here
-smash> here
-smash> here
-smash> here
-smash> here
-smash> here
-smash> here
-smash> here
-smash> here
-0
+smash> smash> smash> smash> test_redirect> new
+smash> smash> again_redirect> new
+smash> smash> test_redirect>> new
+smash> smash> 4558
+smash> smash> 4558
+smash> smash> 4558
+smash> smash> smash> smash> [1] sleep 100&
+smash> smash> smash> smash> smash> smash> smash> smash> smash> smash> smash> smash> before
+smash> smash> smash> smash> smash> smash> smash> smash> smash> smash> smash> smash> smash> smash> smash> smash> smash> smash> smash> 0
 2
 end: 4
-smash> here
-smash> smash> here
-smash> smash: sending SIGKILL signal to 1 jobs:
+smash> smash> smash> smash> smash: sending SIGKILL signal to 1 jobs:
 2: sleep 100&
