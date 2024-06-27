@@ -50,5 +50,5 @@ smash> smash> [1] sleep 100&
 [8] sleep 800&
 [9] sleep 900&
 [10] sleep 1001&
-smash> sleep 1001& 12189
-shell pid - 11667
+smash> sleep 1001& 18239
+to kill pid - 18239

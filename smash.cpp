@@ -6,7 +6,7 @@
 #include "signals.h"
 
 int main(int argc, char *argv[]) {
-    signal(SIGKILL, ctrlCHandler);
+    signal(SIGINT, ctrlCHandler);
     // if (signal(SIGINT, ctrlCHandler) == SIG_ERR) {
     //     perror("smash error: failed to set ctrl-C handler");
     // }
