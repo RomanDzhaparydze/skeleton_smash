@@ -687,6 +687,7 @@ public:
 
         cout << curr_job->command->getCommandStr() << " " << curr_job->job_pid << endl;
         int status;
+        cout << curr_job->job_pid << endl;
         if (waitpid(curr_job->job_pid, &status, WUNTRACED) == -1) {
             perror("smash error: waitpid failed");
         }
