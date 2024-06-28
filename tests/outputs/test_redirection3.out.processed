@@ -1,4 +1,6 @@
-2> 2> 4: sending SIGKILL signal to 0 jobs:
-2: sending SIGKILL signal to 0 jobs:
-2> 4: sending SIGKILL signal to 0 jobs:
-4: sending SIGKILL signal to 0 jobs:
+smash> smash> smash> smash> smash> smash pid is 1
+smash pid is 1
+smash pid is 1
+smash pid is 1
+smash> smash> smash pid is 1
+smash> smash: sending SIGKILL signal to 0 jobs:

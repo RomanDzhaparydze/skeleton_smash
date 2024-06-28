@@ -1,21 +1,16 @@
-smash> smash> smash> smash> smash> smash> sleep 600& : 6
+smash> smash> smash> smash> smash> smash> sleep 300& 2
+smash: got ctrl-C
+smash: process 2 was killed
+smash> sleep 100& 3
 smash: got ctrl-C
 smash: process 3 was killed
-smash> sleep 800& : 8
+smash> sleep 200& 4
 smash: got ctrl-C
-smash: process 68686 was killed
-smash> sleep 600& : 6
+smash: process 4 was killed
+smash> sleep 400& 5
 smash: got ctrl-C
-smash: process 68688 was killed
-smash> sleep 800& : 8
+smash: process 5 was killed
+smash> sleep 500& 6
 smash: got ctrl-C
-smash: process 68686 was killed
-smash> sleep 1000& : 10
-smash: got ctrl-C
-smash: process 68687 was killed
-smash> smash: sending SIGKILL signal to 10 jobs:
-68686: sleep 800&
-68688: sleep 600&
-3: sleep 600&
-68686: sleep 800&
-68687: sleep 1000&
+smash: process 6 was killed
+smash> smash: sending SIGKILL signal to 0 jobs:

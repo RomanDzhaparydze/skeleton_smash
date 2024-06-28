@@ -184,35 +184,44 @@ public:
     virtual ~JobsCommand() = default;
 
     void execute() override {
+        cout << "here before print" << endl;
         jobs->removeFinishedJobs();
         jobs->printJobsList();
     
     }
 };
 
-
+inline bool is_number(const string& s)
+{
+    return !s.empty() && find_if(s.begin(), 
+        s.end(), [](unsigned char c) { return !isdigit(c); }) == s.end();
+}
 
 class KillCommand : public BuiltInCommand {
     // TODO: Add your data members
     JobsList * jobs;
 public:
-    KillCommand(const char *cmd_line, JobsList *jobs): BuiltInCommand(cmd_line), jobs(jobs) {};
+    KillCommand(const char *cmd_line, JobsList *jobs): BuiltInCommand(cmd_line), jobs(jobs) {}
 
     virtual ~KillCommand() = default;
 
     void execute() override {
-        if (command_args.size() != 2 || command_args[0][0] != '-' || (command_args.size() == 2 && !all_of(command_args[0].begin() + 1, command_args[0].end(), ::isdigit)
-        && !all_of(command_args[1].begin(), command_args[1].end(), ::isdigit))) {
+        if (command_args.size() != 2 || !is_number(command_args[1])) {
             cerr << "smash error: kill: invalid arguments" << endl;
             return;
         }
-        int signal = stoi(command_args[0].substr(1));
         int id = stoi(command_args[1]);
         JobsList::JobEntry* curr_job = jobs->getJobById(id);
         if (curr_job == nullptr) {
             cerr << "smash error: kill: job-id "<< id <<" does not exist" << endl;
             return;
         }
+        if (command_args[0][0] != '-' || !is_number(command_args[0].substr(1))) {
+            cerr << "smash error: kill: invalid arguments" << endl;
+            return;
+        }
+        int signal = stoi(command_args[0].substr(1));
+
         if (kill(curr_job->job_pid, signal) == -1) {
             perror("smash error: kill failed");
             return;
@@ -495,12 +504,14 @@ public:
         else {
             SmallShell& smallShell = SmallShell::getInstance();
             if (isBackground) {
+                 cout << "here before jobs size" << endl;
         //             cout << "command args in constr" << this->command_str << endl;
         // cout << "command name in constr - " << this->command_name << endl;
         // for (int i = 0; i < this->command_args.size(); i++) {
         //     cout << "argument number in constr- " << i << " " << this->command_args[i] << endl;
         // }
                 smallShell.getJobsList()->addJob(this, pid, false);
+                cout << "jobs size " << smallShell.getJobsList()->getJobsList().size();
             }
             else {
                 smallShell.setForegroundPid(pid);
@@ -708,7 +719,7 @@ public:
 class RedirectionCommand : public Command {
 private:
     bool isAppend;
-    string command_name;
+    string command_name_in_redir;
     string file_name;
 public:
     explicit RedirectionCommand(const char *cmd_line);
@@ -716,7 +727,6 @@ public:
     virtual ~RedirectionCommand() = default;
 
     void execute() override {
-
         pid_t pid = fork();
 
         if (pid < 0) {
@@ -726,6 +736,7 @@ public:
         else if (pid == 0) {
             // child process 
             setpgrp();
+            close(STDOUT_FILENO);
             int success;
             if (isAppend) success = open(file_name.c_str(), O_RDWR | O_CREAT | O_APPEND, 0644);
             else success = open(file_name.c_str(), O_RDWR | O_CREAT | O_TRUNC, 0644);
@@ -751,17 +762,19 @@ public:
             // execvp(argv[0], const_cast<char* const*>(argv.data()));
             // perror("smash error: exec failed ggg");
             // exit(1);
-            std::istringstream cmd_stream(command_name);
-            std::string word;
-            std::vector<char *> argv;
-            while (cmd_stream >> word) {
-                argv.push_back(strdup(word.c_str()));
-            }
-            argv.push_back(nullptr);
-
-            // Execute the command
-            execvp(argv[0], argv.data());
-            perror("smash error: exec failed");
+            // std::istringstream cmd_stream(command_name_in_redir);
+            // std::string word;
+            // std::vector<char *> argv;
+            // while (cmd_stream >> word) {
+            //     argv.push_back(strdup(word.c_str()));
+            // }
+            // argv.push_back(nullptr);
+            // // Execute the command
+            // execvp(argv[0], argv.data());
+            // perror("smash error: exec failed");
+            SmallShell& smallShell = SmallShell::getInstance();
+            smallShell.executeCommand(command_name_in_redir.c_str());
+            exit(1);
         }
         else {
             // smash process

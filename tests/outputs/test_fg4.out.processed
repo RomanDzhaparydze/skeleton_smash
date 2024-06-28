@@ -1,21 +1,12 @@
 smash> submitted by Eran
-smash> smash> smash> smash> smash> smash> sleep 200& : 2
+smash> smash> smash> smash> smash> smash> sleep 200& 2
 smash: got ctrl-C
-smash: process 6 was killed
-smash> [4] sleep 400&
-[2] sleep 200&
-smash> sleep 400& : 4
+smash: process 2 was killed
+smash> [1] sleep 100&
+smash> sleep 100& 3
 smash: got ctrl-C
-smash: process 5 was killed
-smash> [4] sleep 400&
-[2] sleep 200&
-smash> smash> sleep 600& : 6
+smash: process 3 was killed
+smash> smash> smash> sleep 300& 4
 smash: got ctrl-C
-smash: process 7 was killed
-smash> [4] sleep 400&
-[2] sleep 200&
-[6] sleep 600&
-smash> smash: sending SIGKILL signal to 6 jobs:
-5: sleep 400&
-6: sleep 200&
-7: sleep 600&
+smash: process 4 was killed
+smash> smash> smash: sending SIGKILL signal to 0 jobs:
