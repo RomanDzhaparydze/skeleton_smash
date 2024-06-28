@@ -204,6 +204,11 @@ void JobsList::addJob(Command *cmd, int pid, bool isStopped) {
 void JobsList::printJobsList() {
     removeFinishedJobs();
     for (JobEntry* job : jobs_list) {
+        // cout << "command args" << job->command->command_str << endl;
+        // cout << "command name - " << job->command->command_name << endl;
+        // for (int i = 0; i < job->command->command_args.size(); i++) {
+        //     cout << "argument number - " << i << " " << job->command->command_args[i] << endl;
+        // }
         cout << "[" << job->job_id << "] " << job->command->getCommandStr() << endl;
     }
 }
@@ -282,14 +287,21 @@ Command::Command(const char *cmd_line) : command_str(cmd_line) {
     string word;
 
     if (stream >> word) {
-        cout << "first word - " << word << endl;
+        // cout << "first word - " << word << endl;
         command_name = word;
     }
     while (stream >> word) {
-        cout << "argument - " << word << endl;
+        // cout << "argument - " << word << endl;
         command_args.push_back(word);
     }
+        
     free(new_cmd);
+                        //  cout << "command args in constr" << this->command_str << endl;
+        cout << "command name in constr - " << this->command_name << endl;
+        // for (int i = 0; i < this->command_args.size(); i++) {
+        //     cout << "argument number in constr- " << i << " " << this->command_args[i] << endl;
+        // }
+
 }
 
 RedirectionCommand::RedirectionCommand(const char *cmd_line) : Command(cmd_line) {

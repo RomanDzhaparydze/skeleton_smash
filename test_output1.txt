@@ -1,1 +1,10 @@
-smash> smash> hello> hello> hello> hello> smash> smash> smash> smash: sending SIGKILL signal to 0 jobs:
+smash> command name in constr - sleep
+smash> command name in constr - chprompt
+hello> command name in constr - sleep
+hello> command name in constr - sleep
+hello> command name in constr - sleep
+hello> command name in constr - chprompt
+smash> command name in constr - sleep
+smash> command name in constr - sleep
+smash> command name in constr - quit
+smash: sending SIGKILL signal to 0 jobs:
