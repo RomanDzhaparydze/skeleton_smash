@@ -5,8 +5,7 @@ smash> smash> smash pid is 1
 smash> smash> smash pid is 1
 smash> smash> smash pid is 1
 smash> smash> new
-smash> smash> [1] sleep 100&
-smash> smash> smash> smash> smash> smash> new
+smash> smash> smash> smash> smash> smash> smash> smash> new
 smash> starting to execute redirection
 smash> new
 p
@@ -35,5 +34,4 @@ smash> new
 p
 test
 smash> starting to execute redirection
-smash> smash> smash> smash> smash: sending SIGKILL signal to 1 jobs:
-2: sleep 100&
+smash> smash> smash> smash> smash: sending SIGKILL signal to 0 jobs:

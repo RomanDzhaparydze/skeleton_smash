@@ -218,7 +218,7 @@ void JobsList::removeFinishedJobs() {
     auto it = jobs_list.begin();
     while (it != jobs_list.end()) {
         int end_status;
-        pid_t result = waitpid((*it)->job_pid, &end_status, WNOHANG);
+        pid_t result = waitpid((*it)->job_id, &end_status, WNOHANG);
         if (result != 0) {
             delete *it;
             it = jobs_list.erase(it);
