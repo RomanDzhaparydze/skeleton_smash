@@ -136,9 +136,8 @@ public:
         int job_id;
         pid_t job_pid;
         Command* command;
-
-        time_t start_time;
         bool isStopped;
+        time_t start_time;
 
         JobEntry(int job_id, pid_t job_pid, Command* command, bool isStopped)
                 : job_id(job_id), job_pid(job_pid), command(command), isStopped(isStopped) {
@@ -147,7 +146,7 @@ public:
     };
 
 private:
-    std::vector<JobEntry*> jobs_list;
+    vector<JobEntry*> jobs_list;
 
 public:
     JobsList() = default;
@@ -487,7 +486,7 @@ public:
                 execvp(argv[0], const_cast<char* const*>(argv.data()));
             } 
             else {
-                cout << "ccc" << endl;
+                // cout << "ccc" << endl;
                 execl("/bin/bash", "bash", "-c", command_str.c_str(), nullptr);
             }
             perror("smash error: exec failed ccc");
