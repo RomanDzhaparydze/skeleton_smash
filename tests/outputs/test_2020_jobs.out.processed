@@ -1,11 +1,11 @@
-smash> program text - sleep 40&smash> program text - sleep 200&smash> program text - sleep 300&smash> program text - sleep 400&smash> program text - sleep 500&smash> program text - sleep 600&smash> program text - sleep 700&smash> [1] sleep 40&
+smash> smash> smash> smash> smash> smash> smash> smash> [1] sleep 40&
 [2] sleep 200&
 [3] sleep 300&
 [4] sleep 400&
 [5] sleep 500&
 [6] sleep 600&
 [7] sleep 700&
-smash> program text - sleep 800&smash> program text - sleep 900&smash> [1] sleep 40&
+smash> smash> smash> [1] sleep 40&
 [2] sleep 200&
 [3] sleep 300&
 [4] sleep 400&
@@ -23,7 +23,7 @@ smash> [1] sleep 40&
 [7] sleep 700&
 [8] sleep 800&
 [9] sleep 900&
-smash> program text - sleep 400&smash> [1] sleep 40&
+smash> smash> [1] sleep 40&
 [2] sleep 200&
 [4] sleep 400&
 [5] sleep 500&
@@ -41,7 +41,7 @@ smash> [1] sleep 40&
 [7] sleep 700&
 [8] sleep 800&
 [9] sleep 900&
-smash> program text - sleep 401&smash> [1] sleep 40&
+smash> smash> [1] sleep 40&
 [2] sleep 200&
 [4] sleep 400&
 [5] sleep 500&
@@ -180,7 +180,7 @@ smash> [1] sleep 40&
 [8] sleep 800&
 [9] sleep 900&
 [4] sleep 401&
-smash> signal number 9 was sent to pid 4766
+smash> signal number 9 was sent to pid 11
 smash> smash> [2] sleep 200&
 [4] sleep 400&
 [5] sleep 500&
@@ -189,8 +189,8 @@ smash> smash> [2] sleep 200&
 [8] sleep 800&
 [9] sleep 900&
 [4] sleep 401&
-smash> signal number 9 was sent to pid 4767
-smash> signal number 9 was sent to pid 4769
+smash> signal number 9 was sent to pid 16
+smash> signal number 9 was sent to pid 13
 smash> smash> smash: got ctrl-C
 smash> smash: got ctrl-C
 [5] sleep 500&
@@ -199,7 +199,7 @@ smash> smash: got ctrl-C
 [8] sleep 800&
 [9] sleep 900&
 [4] sleep 401&
-smash> program text - sleep 3&smash> [5] sleep 500&
+smash> smash> [5] sleep 500&
 [6] sleep 600&
 [7] sleep 700&
 [8] sleep 800&
@@ -254,7 +254,7 @@ smash> smash: got ctrl-C
 [8] sleep 800&
 [9] sleep 900&
 [4] sleep 401&
-smash> program text - sleep 777&smash> [5] sleep 500&
+smash> smash> [5] sleep 500&
 [6] sleep 600&
 [7] sleep 700&
 [8] sleep 800&
@@ -265,7 +265,7 @@ smash> smash: got ctrl-C
 smash: process 14 was killed
 smash> smash: got ctrl-C
 smash: process 15 was killed
-smash> program text - sleep 40&smash> [5] sleep 500&
+smash> smash> [5] sleep 500&
 [6] sleep 600&
 [7] sleep 700&
 [8] sleep 800&
@@ -277,11 +277,11 @@ smash> sleep 40& : 16
 smash: got ctrl-C
 smash: process 17 was killed
 smash> smash: sending SIGKILL signal to 8 jobs:
-4770: sleep 500&
-4771: sleep 600&
-4772: sleep 700&
-4773: sleep 800&
-4774: sleep 900&
+18: sleep 500&
+19: sleep 600&
+20: sleep 700&
+21: sleep 800&
+22: sleep 900&
 5: sleep 401&
 23: sleep 777&
 17: sleep 40&

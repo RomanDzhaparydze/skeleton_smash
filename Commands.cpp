@@ -276,15 +276,19 @@ Command::Command(const char *cmd_line) : command_str(cmd_line) {
     isBackground = _isBackgroundComamnd(cmd_line);
     char* new_cmd = strdup(cmd_line);
     if (isBackground) _removeBackgroundSign(new_cmd);
-    _trim(new_cmd);
+    //  cout << "command text - " << new_cmd << endl;
+    // _trim(new_cmd);
     istringstream stream(new_cmd);
     string word;
 
     if (stream >> word) {
+        cout << "first word - " << word << endl;
         command_name = word;
     }
-    while (stream >> word) command_args.push_back(word);
-
+    while (stream >> word) {
+        cout << "argument - " << word << endl;
+        command_args.push_back(word);
+    }
     free(new_cmd);
 }
 
