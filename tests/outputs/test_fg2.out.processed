@@ -1,6 +1,25 @@
+<<<<<<< HEAD
 smash> smash> smash> smash> smash> smash> smash> smash: got ctrl-C
 smash> smash: got ctrl-C
 smash> smash: got ctrl-C
 smash> smash: got ctrl-C
 smash> smash: got ctrl-C
 smash: sending SIGKILL signal to 0 jobs:
+=======
+smash> smash> smash> smash> smash> smash> sleep 600& : 6
+smash: got ctrl-C
+smash: process 3 was killed
+smash> sleep 800& : 8
+smash: got ctrl-C
+smash: process 10 was killed
+smash> sleep 600& : 6
+smash: got ctrl-C
+smash: process 7 was killed
+smash> sleep 800& : 8
+smash: got ctrl-C
+smash: process 10886 was killed
+smash> sleep 1000& : 10
+smash: got ctrl-C
+smash: process 10886 was killed
+smash> smash: sending SIGKILL signal to 0 jobs:
+>>>>>>> c397d41d472ddf73f2bb48a9fc9da03b85c1e49e

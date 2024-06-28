@@ -1,2 +1,2 @@
-smash> smash pid is 1
-smash> smash> smash: sending SIGKILL signal to 0 jobs:
+2> 2> smash: sending SIGKILL signal to 0 jobs:
+2: sending SIGKILL signal to 0 jobs:

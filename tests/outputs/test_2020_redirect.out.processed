@@ -1,37 +1,38 @@
-smash> smash> smash> smash> starting to execute redirection
-smash> smash> starting to execute redirection
-smash> smash> starting to execute redirection
-smash> smash> smash pid is 1
+smash> smash> smash> smash> andrey pidarsmash> andrey pidarsmash> andrey pidarsmash> andrey pidarsmash> andrey pidarsmash> andrey pidarandrey pidarsmash> smash pid is 1
 smash> smash> smash pid is 1
 smash> smash> smash pid is 1
 smash> smash> new
+<<<<<<< HEAD
 smash> smash> smash> smash> smash> smash> smash> smash> new
 smash> starting to execute redirection
 smash> new
+=======
+smash> smash> [1] sleep 100&
+smash> smash> smash> smash> smash> smash> new
+smash> andrey pidarsmash> new
+>>>>>>> c397d41d472ddf73f2bb48a9fc9da03b85c1e49e
 p
 smash> new
 p
-smash> starting to execute redirection
-smash> starting to execute redirection
-smash> before
-smash> smash> smash> starting to execute redirection
-smash> smash> p
-smash> starting to execute redirection
-smash> new
+smash> andrey pidarsmash> andrey pidarsmash> before
+smash> andrey pidarandrey pidarsmash> smash> andrey pidarsmash> smash> p
+smash> andrey pidarsmash> new
 p
 smash> new
 p
-smash> smash> starting to execute redirection
-smash> new
+smash> smash> andrey pidarsmash> new
 p
 smash> new
 p
-smash> smash> starting to execute redirection
-smash> new
+smash> smash> andrey pidarsmash> new
 p
-smash> smash> starting to execute redirection
-smash> new
+smash> smash> andrey pidarsmash> new
 p
 test
+<<<<<<< HEAD
 smash> starting to execute redirection
 smash> smash> smash> smash> smash: sending SIGKILL signal to 0 jobs:
+=======
+smash> andrey pidarsmash> andrey pidarsmash> smash> smash> smash: sending SIGKILL signal to 1 jobs:
+2: sleep 100&
+>>>>>>> c397d41d472ddf73f2bb48a9fc9da03b85c1e49e
