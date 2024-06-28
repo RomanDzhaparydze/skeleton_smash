@@ -226,12 +226,12 @@ void JobsList::removeFinishedJobs() {
         int end_status;
         // cout << "job id - " << (*it) ->job_id << endl;
         pid_t result = waitpid((*it)->job_pid, &end_status, WNOHANG);
-        if (result > 0) {
-            if (WIFEXITED(end_status) || WIFSIGNALED(end_status)) {
+        if (result != 0) {
+            // if (WIFEXITED(end_status) || WIFSIGNALED(end_status)) {
                 delete *it;
                 it = jobs_list.erase(it);
-            }
-            else ++it;
+            // }
+            // else ++it;
         } 
         else ++it;
     }

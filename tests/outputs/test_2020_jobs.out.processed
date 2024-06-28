@@ -70,7 +70,7 @@ smash> command name in constr - jobs
 [9] sleep 900&
 [10] sleep 1001&
 smash> command name in constr - fg
-sleep 1001& : 10
+sleep 1001& : 4
 smash: got ctrl-C
 smash: process 4 was killed
 smash> command name in constr - jobs
@@ -84,7 +84,7 @@ smash> command name in constr - jobs
 [9] sleep 900&
 [10] sleep 1001&
 smash> command name in constr - fg
-sleep 1001& : 10
+sleep 1001& : 4
 smash> smash: got ctrl-C
 command name in constr - jobs
 [1] sleep 100&
@@ -97,7 +97,7 @@ command name in constr - jobs
 [9] sleep 900&
 [10] sleep 1001&
 smash> command name in constr - fg
-sleep 1001& : 10
+sleep 1001& : 4
 smash> smash: got ctrl-C
 command name in constr - jobs
 [1] sleep 100&
@@ -110,7 +110,7 @@ command name in constr - jobs
 [9] sleep 900&
 [10] sleep 1001&
 smash> command name in constr - fg
-sleep 1001& : 10
+sleep 1001& : 4
 smash> smash: got ctrl-C
 command name in constr - jobs
 [1] sleep 100&
@@ -293,7 +293,7 @@ smash> command name in constr - jobs
 [9] sleep 900&
 [10] sleep 1001&
 smash> command name in constr - fg
-sleep 1001& : 10
+sleep 1001& : 4
 smash> smash: got ctrl-C
 command name in constr - jobs
 [5] sleep 500&
@@ -303,7 +303,7 @@ command name in constr - jobs
 [9] sleep 900&
 [10] sleep 1001&
 smash> command name in constr - fg
-sleep 1001& : 10
+sleep 1001& : 4
 smash> smash: got ctrl-C
 command name in constr - jobs
 [5] sleep 500&
@@ -313,7 +313,7 @@ command name in constr - jobs
 [9] sleep 900&
 [10] sleep 1001&
 smash> command name in constr - fg
-sleep 1001& : 10
+sleep 1001& : 4
 smash> smash: got ctrl-C
 command name in constr - jobs
 [5] sleep 500&
@@ -348,7 +348,7 @@ smash> command name in constr - jobs
 [11] sleep 777&
 [12] sleep 100&
 smash> command name in constr - fg
-sleep 100& : 12
+sleep 100& : 15
 smash: got ctrl-C
 smash: process 15 was killed
 smash> command name in constr - quit
