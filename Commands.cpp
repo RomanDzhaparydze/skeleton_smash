@@ -204,6 +204,11 @@ void JobsList::addJob(Command *cmd, int pid, bool isStopped) {
 void JobsList::printJobsList() {
     removeFinishedJobs();
     for (JobEntry* job : jobs_list) {
+        // cout << "command args" << job->command->command_str << endl;
+        // cout << "command name - " << job->command->command_name << endl;
+        // for (int i = 0; i < job->command->command_args.size(); i++) {
+        //     cout << "argument number - " << i << " " << job->command->command_args[i] << endl;
+        // }
         cout << "[" << job->job_id << "] " << job->command->getCommandStr() << endl;
     }
 }
@@ -219,20 +224,16 @@ void JobsList::removeFinishedJobs() {
     auto it = jobs_list.begin();
     while (it != jobs_list.end()) {
         int end_status;
-        pid_t result = waitpid((*it)->job_id, &end_status, WNOHANG);
-        if (result > 0) {
-            if (WIFEXITED(end_status) || WIFSIGNALED(end_status)) {
+        // cout << "job id - " << (*it) ->job_id << endl;
+        pid_t result = waitpid((*it)->job_pid, &end_status, WNOHANG);
+        if (result != 0) {
+            // if (WIFEXITED(end_status) || WIFSIGNALED(end_status)) {
                 delete *it;
                 it = jobs_list.erase(it);
-            }
-            else ++it;
-        }
+            // }
+            // else ++it;
+        } 
         else ++it;
-//        if (result != 0) {
-//            delete *it;
-//            it = jobs_list.erase(it);
-//        }
-//        else ++it;
     }
 }
 
@@ -280,16 +281,27 @@ Command::Command(const char *cmd_line) : command_str(cmd_line) {
     isBackground = _isBackgroundComamnd(cmd_line);
     char* new_cmd = strdup(cmd_line);
     if (isBackground) _removeBackgroundSign(new_cmd);
-
+    //  cout << "command text - " << new_cmd << endl;
+    // _trim(new_cmd);
     istringstream stream(new_cmd);
     string word;
 
     if (stream >> word) {
+        // cout << "first word - " << word << endl;
         command_name = word;
     }
-    while (stream >> word) command_args.push_back(word);
-
+    while (stream >> word) {
+        // cout << "argument - " << word << endl;
+        command_args.push_back(word);
+    }
+        
     free(new_cmd);
+                        //  cout << "command args in constr" << this->command_str << endl;
+        // cout << "command name in constr - " << this->command_name << endl;
+        // for (int i = 0; i < this->command_args.size(); i++) {
+        //     cout << "argument number in constr- " << i << " " << this->command_args[i] << endl;
+        // }
+
 }
 
 RedirectionCommand::RedirectionCommand(const char *cmd_line) : Command(cmd_line) {

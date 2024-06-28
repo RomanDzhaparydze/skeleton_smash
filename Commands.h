@@ -29,7 +29,7 @@ using namespace std;
 extern string curr_prompt;
 
 class Command {
-protected:
+public:
 string command_str;
 string command_name;
 vector <string> command_args;
@@ -136,9 +136,8 @@ public:
         int job_id;
         pid_t job_pid;
         Command* command;
-
-        time_t start_time;
         bool isStopped;
+        time_t start_time;
 
         JobEntry(int job_id, pid_t job_pid, Command* command, bool isStopped)
                 : job_id(job_id), job_pid(job_pid), command(command), isStopped(isStopped) {
@@ -147,7 +146,7 @@ public:
     };
 
 private:
-    std::vector<JobEntry*> jobs_list;
+    vector<JobEntry*> jobs_list;
 
 public:
     JobsList() = default;
@@ -487,7 +486,7 @@ public:
                 execvp(argv[0], const_cast<char* const*>(argv.data()));
             } 
             else {
-                cout << "ccc" << endl;
+                // cout << "ccc" << endl;
                 execl("/bin/bash", "bash", "-c", command_str.c_str(), nullptr);
             }
             perror("smash error: exec failed ccc");
@@ -496,6 +495,11 @@ public:
         else {
             SmallShell& smallShell = SmallShell::getInstance();
             if (isBackground) {
+        //             cout << "command args in constr" << this->command_str << endl;
+        // cout << "command name in constr - " << this->command_name << endl;
+        // for (int i = 0; i < this->command_args.size(); i++) {
+        //     cout << "argument number in constr- " << i << " " << this->command_args[i] << endl;
+        // }
                 smallShell.getJobsList()->addJob(this, pid, false);
             }
             else {
@@ -679,7 +683,7 @@ public:
         SmallShell& smallShell = SmallShell::getInstance();
         smallShell.setForegroundPid(curr_job->job_pid);
         // changed job_pid to job_id bacause it supposed to be like that in tests
-        cout << curr_job->command->getCommandStr() << " : " << curr_job->job_id << endl;
+        cout << curr_job->command->getCommandStr() << " " << curr_job->job_pid << endl;
         // cout << "to kill pid - " << smallShell.getForegroundPid() << endl;
         // cout << "pid of shell - " << getpid() << endl;
         int job_pid = curr_job->job_pid;
