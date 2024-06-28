@@ -297,7 +297,7 @@ Command::Command(const char *cmd_line) : command_str(cmd_line) {
         
     free(new_cmd);
                         //  cout << "command args in constr" << this->command_str << endl;
-        cout << "command name in constr - " << this->command_name << endl;
+        // cout << "command name in constr - " << this->command_name << endl;
         // for (int i = 0; i < this->command_args.size(); i++) {
         //     cout << "argument number in constr- " << i << " " << this->command_args[i] << endl;
         // }
