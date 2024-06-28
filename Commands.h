@@ -683,7 +683,7 @@ public:
         SmallShell& smallShell = SmallShell::getInstance();
         smallShell.setForegroundPid(curr_job->job_pid);
         // changed job_pid to job_id bacause it supposed to be like that in tests
-        cout << curr_job->command->getCommandStr() << " : " << curr_job->job_pid << endl;
+        cout << curr_job->command->getCommandStr() << " " << curr_job->job_pid << endl;
         // cout << "to kill pid - " << smallShell.getForegroundPid() << endl;
         // cout << "pid of shell - " << getpid() << endl;
         int job_pid = curr_job->job_pid;
