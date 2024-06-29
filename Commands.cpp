@@ -203,6 +203,7 @@ void JobsList::addJob(Command *cmd, int pid, bool isStopped) {
 
 void JobsList::printJobsList() {
     removeFinishedJobs();
+    cout << "here in print before for" << endl;
     for (JobEntry* job : jobs_list) {
         // cout << "command args" << job->command->command_str << endl;
         // cout << "command name - " << job->command->command_name << endl;
@@ -311,13 +312,13 @@ RedirectionCommand::RedirectionCommand(const char *cmd_line) : Command(cmd_line)
     if (pos_of_big_redir != std::string::npos) {
         isAppend = true;
         file_name = _trim(command_str.substr(pos_of_big_redir + 2));
-        command_name = _trim(command_str.substr(0, pos_of_big_redir));
+        command_name_in_redir = _trim(command_str.substr(0, pos_of_big_redir));
     }
     else {
         pos_of_big_redir = command_str.find('>');
         isAppend = false;
         file_name = _trim(command_str.substr(pos_of_big_redir + 1));
-        command_name = _trim(command_str.substr(0, pos_of_big_redir));
+        command_name_in_redir = _trim(command_str.substr(0, pos_of_big_redir));
     }
 }
 

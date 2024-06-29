@@ -1,1 +1,3 @@
-smash> smash> hello> hello> hello> hello> smash> smash> smash> smash: sending SIGKILL signal to 0 jobs:
+smash> smash> hello> hello> hello> here before jobs size
+jobs size 1hello> smash> here before jobs size
+jobs size 2smash> smash> smash: sending SIGKILL signal to 0 jobs:
