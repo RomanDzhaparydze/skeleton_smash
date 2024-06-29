@@ -1,3 +1,2 @@
-smash> smash> hello> hello> hello> here before jobs size
-jobs size 1hello> smash> here before jobs size
-jobs size 2smash> smash> smash: sending SIGKILL signal to 0 jobs:
+smash> amount of jobs - 0 before quit kill
+smash: sending SIGKILL signal to 0 jobs:

@@ -34,6 +34,7 @@ string command_str;
 string command_name;
 vector <string> command_args;
 bool isBackground;
+string aliased_command;
 
 public:
     explicit Command(const char *cmd_line);
@@ -179,13 +180,13 @@ class JobsCommand : public BuiltInCommand {
     // TODO: Add your data members
     JobsList * jobs;
 public:
-    JobsCommand(const char *cmd_line, JobsList *jobs): BuiltInCommand(cmd_line), jobs(jobs) {};
+    JobsCommand(const char *cmd_line, JobsList *jobs): BuiltInCommand(cmd_line), jobs(jobs) {
+        // cout << "in constructor size of jobs - " << jobs->getJobsList().size() << endl;
+    }
 
     virtual ~JobsCommand() = default;
 
     void execute() override {
-        cout << "here before print" << endl;
-        jobs->removeFinishedJobs();
         jobs->printJobsList();
     
     }
@@ -471,7 +472,11 @@ public:
 
 class ExternalCommand : public Command {
 public:
-    ExternalCommand(const char *cmd_line) : Command(cmd_line) {}
+
+
+    ExternalCommand(const char *cmd_line, string aliased_command) : Command(cmd_line) {
+        this->aliased_command = aliased_command;
+    }
 
     virtual ~ExternalCommand() = default;
 
@@ -504,14 +509,14 @@ public:
         else {
             SmallShell& smallShell = SmallShell::getInstance();
             if (isBackground) {
-                 cout << "here before jobs size" << endl;
+                //  cout << "here before jobs size" << endl;
         //             cout << "command args in constr" << this->command_str << endl;
         // cout << "command name in constr - " << this->command_name << endl;
         // for (int i = 0; i < this->command_args.size(); i++) {
         //     cout << "argument number in constr- " << i << " " << this->command_args[i] << endl;
         // }
                 smallShell.getJobsList()->addJob(this, pid, false);
-                cout << "jobs size " << smallShell.getJobsList()->getJobsList().size();
+                // cout << "jobs size " << smallShell.getJobsList()->getJobsList().size();
             }
             else {
                 smallShell.setForegroundPid(pid);
@@ -773,6 +778,7 @@ public:
             // execvp(argv[0], argv.data());
             // perror("smash error: exec failed");
             SmallShell& smallShell = SmallShell::getInstance();
+            cout << "command to execute - " << command_name_in_redir.c_str() << endl;
             smallShell.executeCommand(command_name_in_redir.c_str());
             exit(1);
         }
