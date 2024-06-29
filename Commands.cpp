@@ -110,14 +110,18 @@ Command *SmallShell::CreateCommand(const char *cmd_line) {
 
     string cmd_s = _trim(string(cmd_line)); 
     string firstWord = cmd_s.substr(0, cmd_s.find_first_of(" \n"));
+    cout << "amount of jobs - " << job_list_of_shell->getJobsList().size()  << " before " << cmd_line << endl;
 
+    const char* real_command = cmd_line;
     auto alias_it = alias_map.find(firstWord);
     if (alias_it != alias_map.end()) {
         string alias_cmd = alias_it->second + cmd_s.substr(firstWord.length());
+        // cout << "real command is - " << real_command << "end" << endl;
+        // cout << "aliased command is - " << cmd_line << "end" << endl;
         cmd_s = _trim(string(alias_cmd));
         firstWord = cmd_s.substr(0, cmd_s.find_first_of(" \n"));
+        real_command = cmd_s.c_str();
     }
-
     size_t pos_of_small_redir = cmd_s.find('<');
     if (pos_of_small_redir != string::npos) {
         return new RedirectionCommand(cmd_line);
@@ -163,7 +167,7 @@ Command *SmallShell::CreateCommand(const char *cmd_line) {
     } else if (firstWord.compare("watch") == 0) {
         return new WatchCommand(cmd_line);
     } else {
-        return new ExternalCommand(cmd_line);
+        return new ExternalCommand(real_command, string(cmd_line));
     }
 }
 
@@ -203,14 +207,15 @@ void JobsList::addJob(Command *cmd, int pid, bool isStopped) {
 
 void JobsList::printJobsList() {
     removeFinishedJobs();
-    cout << "here in print before for" << endl;
+    // cout << "here in print before for" << endl;
+    // cout << "in print jobs size - " << jobs_list.size();
     for (JobEntry* job : jobs_list) {
         // cout << "command args" << job->command->command_str << endl;
         // cout << "command name - " << job->command->command_name << endl;
         // for (int i = 0; i < job->command->command_args.size(); i++) {
         //     cout << "argument number - " << i << " " << job->command->command_args[i] << endl;
         // }
-        cout << "[" << job->job_id << "] " << job->command->getCommandStr() << endl;
+        cout << "[" << job->job_id << "] " << job->command->aliased_command << endl;
     }
 }
 
@@ -278,7 +283,7 @@ JobsList::JobEntry *JobsList::getLastStoppedJob(int *jobId) {
     return nullptr;
 }
 
-Command::Command(const char *cmd_line) : command_str(cmd_line) {
+Command::Command(const char *cmd_line) : command_str(cmd_line), aliased_command(cmd_line) {
     isBackground = _isBackgroundComamnd(cmd_line);
     char* new_cmd = strdup(cmd_line);
     if (isBackground) _removeBackgroundSign(new_cmd);
