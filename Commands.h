@@ -176,15 +176,12 @@ public:
     std::vector<JobEntry*> getJobsList() const {
         return jobs_list;
     }
-    // TODO: Add extra methods or modify exisitng ones as needed
 };
 
 class JobsCommand : public BuiltInCommand {
-    // TODO: Add your data members
     JobsList * jobs;
 public:
     JobsCommand(const char *cmd_line, JobsList *jobs): BuiltInCommand(cmd_line), jobs(jobs) {
-        // cout << "in constructor size of jobs - " << jobs->getJobsList().size() << endl;
     }
 
     virtual ~JobsCommand() = default;
@@ -202,7 +199,6 @@ inline bool is_number(const string& s)
 }
 
 class KillCommand : public BuiltInCommand {
-    // TODO: Add your data members
     JobsList * jobs;
 public:
     KillCommand(const char *cmd_line, JobsList *jobs): BuiltInCommand(cmd_line), jobs(jobs) {}
@@ -220,10 +216,7 @@ public:
             cerr << "smash error: kill: job-id "<< id <<" does not exist" << endl;
             return;
         }
-        // if (command_args[0][0] != '-' || !is_number(command_args[0].substr(1))) {
-        //     cerr << "smash error: kill: invalid arguments" << endl;
-        //     return;
-        // }
+
         int signal = stoi(command_args[0].substr(1));
         cout << "signal number " << signal << " was sent to pid " << curr_job->job_pid << endl;
         if (kill(curr_job->job_pid, signal) == -1) {
@@ -340,75 +333,95 @@ static set<string> reserved_keywords = {
         "chprompt", "showpid", "pwd", "cd", "jobs", "fg", "quit", "kill", "alias", "unalias", "listdir", "getuser", "watch",
 };
 
-static regex regex_exp_for_name("^([a-zA-Z0-9_]+)='([^']*)'$");
+static regex regex_exp_for_name("^alias [a-zA-Z0-9_]+='[^']*'$");
 
 
 class aliasCommand : public BuiltInCommand {
 private:
     map<string, string>& alias_map;
+    vector<string>& keys;
 public:
-    aliasCommand(const char *cmd_line, map<string, string>& alias_map) : BuiltInCommand(cmd_line), alias_map(alias_map) {}
+    aliasCommand(const char *cmd_line, map<string, string>& alias_map, vector<string>& keys);
 
     virtual ~aliasCommand() {}
 
     void execute() override {
+        if (command_str.back() == ' ') command_str = command_str.substr(0, command_str.size()-1);
+
         if (command_args.empty()) {
-            for (auto& alias: alias_map) {
-                cout << alias.first << "='" << alias.second << "'" << endl;
+            for (auto& key: keys) {
+                cout << key << "='" << alias_map[key] << "'" << endl;
             }
             return;
         }
-        if (command_args.size() != 1 || !regex_match(command_args[0], regex_exp_for_name)) {
-            std::cerr << "smash error: alias: invalid alias format" << std::endl;
+        if (!regex_match(command_str, regex_exp_for_name)) {
+            cerr << "smash error: alias: invalid alias format" << endl;
             return;
         }
 
         size_t pos_of_equals = command_args[0].find('=');
         if (pos_of_equals == 0 || pos_of_equals == command_args[0].size() - 1 || pos_of_equals == string::npos) {
-            std::cerr << "smash error: alias: invalid alias format" << std::endl;
+            cerr << "smash error: alias: invalid alias format" << endl;
             return;
         }
 
         string new_name = command_args[0].substr(0, pos_of_equals);
-        string old_name = command_args[0].substr(pos_of_equals + 1);
-
+        if (!regex_match(new_name, regex("^[a-zA-Z0-9_]+"))) {
+            cerr << "smash error: alias: invalid alias format" << endl;
+            return;
+        }
+        size_t pos_of_equals_in_command = command_str.find('=');
+        string old_name = command_str.substr(pos_of_equals_in_command + 1);
+        size_t pos_of_slash = old_name.find_last_of('\'');
+        old_name = old_name.substr(0, pos_of_slash+1);
         if (old_name.front() =='\'' && old_name.back() == '\'') {
             old_name = old_name.substr(1, old_name.size() - 2);
         }
         else {
-            std::cerr << "smash error: alias: invalid alias format" << std::endl;
+            cerr << "smash error: alias: invalid alias format" << endl;
             return;
         }
 
-        if (reserved_keywords.find(old_name) != reserved_keywords.end() ||
+
+        if (reserved_keywords.find(new_name) != reserved_keywords.end() ||
             alias_map.find(new_name) != alias_map.end()) {
-            std::cerr << "smash error: alias: invalid alias format" << std::endl;
+            cerr << "smash error: alias: " << new_name << " already exists or is a reserved command" << endl;
             return;
         }
         alias_map[new_name] = old_name;
+        keys.push_back(new_name);
     }
 };
 
 class unaliasCommand : public BuiltInCommand {
 private:
     map<string, string>& alias_map;
+    vector<string>& keys;
 public:
-    unaliasCommand(const char *cmd_line, map<string, string>& alias_map) : BuiltInCommand(cmd_line), alias_map(alias_map) {}
+    unaliasCommand(const char *cmd_line, map<string, string>& alias_map, vector<string>& keys) : BuiltInCommand(cmd_line), alias_map(alias_map), keys(keys) {}
 
     virtual ~unaliasCommand() {}
 
     void execute() override {
         if (command_args.empty()) {
-            std::cerr << "smash error: unalias: not enough arguments" << std::endl;
+            cerr << "smash error: unalias: not enough arguments" << endl;
             return;
         }
         for (const auto& new_name : command_args) {
             auto it = alias_map.find(new_name);
             if (it == alias_map.end()) {
-                std::cerr << "smash error: unalias: " << new_name << " alias does not exist" << std::endl;
+                cerr << "smash error: unalias: " << new_name << " alias does not exist" << endl;
                 return;
             }
             alias_map.erase(it);
+            auto it1 = keys.begin();
+            while (it1 != keys.end()) {
+                if ((*it1) == new_name) {
+                    keys.erase(it1);
+                    break;
+                }
+                it1++;
+            }
         }
     }
 };
@@ -418,6 +431,7 @@ private:
     JobsList * job_list_of_shell;
     char* lastPwd;
     map<string, string> alias_map;
+    vector<string> keys;
     pid_t foreground_pid;
     SmallShell();
 
@@ -437,7 +451,6 @@ public:
     ~SmallShell();
 
     void executeCommand(const char *cmd_line);
-    // TODO: add extra methods as needed
 
     const map<string, string>& getAliasMap() const {
         return alias_map;
@@ -500,25 +513,19 @@ public:
 
             if (command_name.find('*') == string::npos && command_name.find('?') == string::npos) {
                 execvp(argv[0], const_cast<char* const*>(argv.data()));
+                perror("smash error: execvp failed");
             } 
             else {
-                // cout << "ccc" << endl;
                 execl("/bin/bash", "bash", "-c", command_str.c_str(), nullptr);
+                perror("smash error: execl failed");
+
             }
-            // perror("smash error: exec failed");
             exit(1);
         }
         else {
             SmallShell& smallShell = SmallShell::getInstance();
             if (isBackground) {
-                //  cout << "here before jobs size" << endl;
-        //             cout << "command args in constr" << this->command_str << endl;
-        // cout << "command name in constr - " << this->command_name << endl;
-        // for (int i = 0; i < this->command_args.size(); i++) {
-        //     cout << "argument number in constr- " << i << " " << this->command_args[i] << endl;
-        // }
                 smallShell.getJobsList()->addJob(this, pid, false);
-                // cout << "jobs size " << smallShell.getJobsList()->getJobsList().size();
             }
             else {
                 smallShell.setForegroundPid(pid);
@@ -616,17 +623,6 @@ public:
             smallShell.executeCommand(command_name_1.c_str());
             exit(1);
 
-            // istringstream stream(command_name_1);
-            // string word;
-            // vector<const char*> argv;
-            // while (stream >> word) {
-            //     argv.push_back(word.c_str());
-            // }
-            // argv.push_back(nullptr);
-
-            // execvp(argv[0], const_cast<char* const*>(argv.data()));
-            // perror("smash error: exec failed aaa");
-            // exit(1);
         }
         pid_t pid2 = fork();
         if (pid2 == -1) {
@@ -644,17 +640,7 @@ public:
             SmallShell& smallShell = SmallShell::getInstance();
             smallShell.executeCommand(command_name_2.c_str());
             exit(1);
-            // istringstream stream(command_name_2);
-            // string word;
-            // vector<const char*> argv;
-            // while (stream >> word) {
-            //     argv.push_back(word.c_str());
-            // }
-            // argv.push_back(nullptr);
 
-            // execvp(argv[0], const_cast<char* const*>(argv.data()));
-            // perror("smash error: exec failed bbb");
-            // exit(1);
         }
         else {
             SmallShell& smallShell = SmallShell::getInstance();
@@ -682,7 +668,6 @@ public:
     virtual ~ForegroundCommand() {}
 
     void execute() override {
-        // parsing 
         if (command_args.empty() && jobs_list->getJobsList().empty()) {
             cerr << "smash error: fg: jobs list is empty" << endl;
             return;
@@ -692,7 +677,6 @@ public:
             return;
         }
         bool isIdGiven = command_args.size() == 1;
-        // cout << "ID given" << isIdGiven << endl;
         JobsList::JobEntry* curr_job;
         int id;
         if (isIdGiven) {
@@ -708,26 +692,19 @@ public:
 
         SmallShell& smallShell = SmallShell::getInstance();
         smallShell.setForegroundPid(curr_job->job_pid);
-        // changed job_pid to job_id bacause it supposed to be like that in tests
         cout << curr_job->command->getCommandStr() << " " << curr_job->job_pid << endl;
-        // cout << "to kill pid - " << smallShell.getForegroundPid() << endl;
-        // cout << "pid of shell - " << getpid() << endl;
+
         int job_pid = curr_job->job_pid;
         if (kill(job_pid, SIGCONT) == -1) {
             perror("smash error: kill failed");
             return;
         }
-        // int status;
 
         if (waitpid(job_pid, NULL, WUNTRACED) == -1) {
             perror("smash error: waitpid failed");
-            // cout << "here" << endl;
         }
-        // cout << "here1" << endl;
         jobs_list->removeJobById(job_pid);
-        // cout << "here2" << endl;
         smallShell.setForegroundPid(-1);
-        // cout << "here3" << endl;
     }
 };
 
@@ -749,7 +726,6 @@ public:
             return;
         }
         else if (pid == 0) {
-            // child process 
 
             setpgrp();
             close(STDOUT_FILENO);
@@ -761,46 +737,12 @@ public:
                 perror("smash error: open failed");
                 exit(1);
             }
-            // redirecting the output
-            // if (dup2(success, STDOUT_FILENO) == -1) {
-            //     perror("smash error: dup2 failed");
-            //     close(success);
-            //     exit (1);
-            // }
-            // istringstream stream(command_name);
-            // string word;
-            // vector<const char*> argv;
-            // while (stream >> word) {
-            //     argv.push_back(word.c_str());
-            // }
-            // argv.push_back(nullptr);
-            
-            // execvp(argv[0], const_cast<char* const*>(argv.data()));
-            // perror("smash error: exec failed ggg");
-            // exit(1);
-            // std::istringstream cmd_stream(command_name_in_redir);
-            // std::string word;
-            // std::vector<char *> argv;
-            // while (cmd_stream >> word) {
-            //     argv.push_back(strdup(word.c_str()));
-            // }
-            // argv.push_back(nullptr);
-            // // Execute the command
-            // execvp(argv[0], argv.data());
-            // perror("smash error: exec failed");
-            // string cmd_s = _trim(string(command_name_in_redir)); 
-            // string firstWord = cmd_s.substr(0, cmd_s.find_first_of(" \n"));
-            // if (firstWord.compare("jobs") == 0)
             SmallShell& smallShell = SmallShell::getInstance();
-            // cout << "command to execute - " << command_name_in_redir.c_str() << endl;
-            // cout << "in redir amount of jobs - " << smallShell.getJobsList()->getJobsList().size() << endl;
             smallShell.executeCommand(command_name_in_redir.c_str());
             close(success);
             exit(1);
         }
         else {
-            // smash process
-            // cout << isAppend << endl << file_name << endl;
             SmallShell& smallShell = SmallShell::getInstance();
             smallShell.setForegroundPid(pid);
 
@@ -808,14 +750,12 @@ public:
             if (waitpid(pid, &status, WUNTRACED) == -1) {
                 perror("smash error: waitpid failed");
             }
-            // cout << "after wait" << endl;
             smallShell.setForegroundPid(-1);
         }
     }
 };
 
 class QuitCommand : public BuiltInCommand {
-// TODO: Add your data members
 public:
     JobsList * jobs;
     QuitCommand(const char *cmd_line, JobsList *jobs): BuiltInCommand(cmd_line), jobs(jobs) {};
@@ -826,7 +766,7 @@ public:
             vector<JobsList::JobEntry *> jobs_list = jobs->getJobsList();
             cout << "smash: sending SIGKILL signal to " << jobs_list.size() << " jobs:" << endl;
             for (auto &job : jobs_list) {
-                cout << job->job_pid << ": " << job->command->getCommandStr() << endl;
+                cout << job->job_pid << ": " << job->command->aliased_command << endl;
             }
             jobs->killAllJobs();
         }

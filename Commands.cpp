@@ -86,106 +86,63 @@ SmallShell::~SmallShell() {
     free(lastPwd);
 }
 
-/* Creates and returns a pointer to Command class which matches the given command line (cmd_line)
-*/
-
-    // For example:
-/*
-  string cmd_s = _trim(string(cmd_line));
-  string firstWord = cmd_s.substr(0, cmd_s.find_first_of(" \n"));
-
-  if (firstWord.compare("pwd") == 0) {
-    return new GetCurrDirCommand(cmd_line);
-  }
-  else if (firstWord.compare("showpid") == 0) {
-    return new ShowPidCommand(cmd_line);
-  }
-  else if ...
-  .....
-  else {
-    return new ExternalCommand(cmd_line);
-  }
-  */
 Command *SmallShell::CreateCommand(const char *cmd_line) {
 
 
     string cmd_s = _trim(string(cmd_line)); 
     string firstWord = cmd_s.substr(0, cmd_s.find_first_of(" \n"));
-    // cout << "amount of jobs - " << job_list_of_shell->getJobsList().size()  << " before " << cmd_line << endl;
 
     const char* real_command = cmd_line;
     auto alias_it = alias_map.find(firstWord);
     if (alias_it != alias_map.end()) {
         string alias_cmd = alias_it->second + cmd_s.substr(firstWord.length());
-        // cout << "real command is - " << real_command << "end" << endl;
-        // cout << "aliased command is - " << cmd_line << "end" << endl;
         cmd_s = _trim(string(alias_cmd));
         firstWord = cmd_s.substr(0, cmd_s.find_first_of(" \n"));
         real_command = cmd_s.c_str();
+
     }
-    // size_t pos_of_small_redir = cmd_s.find('<');
-    // if (pos_of_small_redir != string::npos) {
-    //     return new RedirectionCommand(cmd_line);
-    // }
 
-    // size_t pos_of_pipe = cmd_s.find('|');
-    // if (pos_of_pipe != string::npos) {
-    //     return new PipeCommand(cmd_line);
-    // }
-
-    string cmd_line_str(cmd_line);
-    // cout << cmd_line_str << endl;
+    string cmd_line_str(real_command);
 
 
     if(firstWord.compare("chprompt") == 0){
-        return new ChPromptCommand(cmd_line);
+        return new ChPromptCommand(real_command);
     } else if (firstWord.compare("pwd") == 0){
-        return new GetCurrDirCommand(cmd_line); 
-    } else if (cmd_line_str.find('>') != std::string::npos){
-        return new RedirectionCommand(cmd_line);
-    } else if (cmd_line_str.find('|') != std::string::npos){
-        return new PipeCommand(cmd_line);
-    }  else if (firstWord.compare("showpid") == 0) {
-        return new ShowPidCommand(cmd_line);
-    } else if (firstWord.compare("cd") == 0) {
-        return new ChangeDirCommand(cmd_line, &lastPwd);
-    } else if (firstWord.compare("jobs") == 0) {
-        return new JobsCommand(cmd_line, this->job_list_of_shell);
-    } else if (firstWord.compare("fg") == 0) {
-        return new ForegroundCommand(cmd_line, this->job_list_of_shell);
-    } else if (firstWord.compare("quit") == 0) {
-        return new QuitCommand(cmd_line, this->job_list_of_shell);
-    } else if (firstWord.compare("kill") == 0) {
-        return new KillCommand(cmd_line, this->job_list_of_shell);
+        return new GetCurrDirCommand(real_command); 
     } else if (firstWord.compare("alias") == 0) {
-        return new aliasCommand(cmd_line, alias_map);
+        return new aliasCommand(real_command, alias_map, keys);
     } else if (firstWord.compare("unalias") == 0) {
-        return new unaliasCommand(cmd_line, alias_map);
+        return new unaliasCommand(real_command, alias_map, keys);
+    } else if (cmd_line_str.find('>') != std::string::npos){
+        return new RedirectionCommand(real_command);
+    } else if (cmd_line_str.find('|') != std::string::npos){
+        return new PipeCommand(real_command);
+    }  else if (firstWord.compare("showpid") == 0) {
+        return new ShowPidCommand(real_command);
+    } else if (firstWord.compare("cd") == 0) {
+        return new ChangeDirCommand(real_command, &lastPwd);
+    } else if (firstWord.compare("jobs") == 0) {
+        return new JobsCommand(real_command, this->job_list_of_shell);
+    } else if (firstWord.compare("fg") == 0) {
+        return new ForegroundCommand(real_command, this->job_list_of_shell);
+    } else if (firstWord.compare("quit") == 0) {
+        return new QuitCommand(real_command, this->job_list_of_shell);
+    } else if (firstWord.compare("kill") == 0) {
+        return new KillCommand(real_command, this->job_list_of_shell);
     } else if (firstWord.compare("listdir") == 0) {
-        return new ListDirCommand(cmd_line);
+        return new ListDirCommand(real_command);
     } else if (firstWord.compare("getuser") == 0) {
-        return new GetUserCommand(cmd_line);
+        return new GetUserCommand(real_command);
     } else if (firstWord.compare("watch") == 0) {
-        return new WatchCommand(cmd_line);
+        return new WatchCommand(real_command);
     } else {
         return new ExternalCommand(real_command, string(cmd_line));
     }
 }
 
 void SmallShell::executeCommand(const char *cmd_line) {
-    // TODO: Add your implementation here
-    // for example:
-    //Command* cmd = CreateCommand(cmd_line);
-    //cmd->execute();
-    // Please note that you must fork smash process for some commands (e.g., external commands....)
-    // std::cout << curr_prompt << "> ";
-    // cout << "before removeJobs amount of jobs - " << job_list_of_shell->getJobsList().size() << " in command " << cmd_line << endl;
-    // job_list_of_shell->printJobsList();
     job_list_of_shell->removeFinishedJobs();
-    // cout << "after removeJobs amount of jobs - " << job_list_of_shell->getJobsList().size() << " in command " << cmd_line << endl;
-    // job_list_of_shell->printJobsList();
     Command* cmd = CreateCommand(cmd_line);
-    // cout << "after create amount of jobs - " << job_list_of_shell->getJobsList().size() << " in command " << cmd_line << endl;
     setForegroundPid(-1);
     cmd->execute();
 }
@@ -195,32 +152,13 @@ void JobsList::addJob(Command *cmd, int pid, bool isStopped) {
     int job_id = 1;
     if (!jobs_list.empty()) job_id = jobs_list.back()->job_id + 1;
     jobs_list.push_back(new JobEntry(job_id, pid, cmd, isStopped));
-
-//    pid_t child_pid = fork();
-//    if (child_pid == -1) {
-//        perror("smash error: fork failed");
-//        return;
-//    }
-//    if (child_pid == 0) {
-//        setpgrp();
-//        cmd->execute();
-//        exit(0);
-//    } else {
-//        if (cmd->background()) jobs_list.emplace_back(new JobEntry(job_id, child_pid, cmd, isStopped));
-//        else waitpid(child_pid, nullptr, 0);
-//    }
 }
 
 void JobsList::printJobsList() {
     removeFinishedJobs();
-    // cout << "here in print before for" << endl;
-    // cout << "in print jobs size - " << jobs_list.size();
+
     for (JobEntry* job : jobs_list) {
-        // cout << "command args" << job->command->command_str << endl;
-        // cout << "command name - " << job->command->command_name << endl;
-        // for (int i = 0; i < job->command->command_args.size(); i++) {
-        //     cout << "argument number - " << i << " " << job->command->command_args[i] << endl;
-        // }
+
         cout << "[" << job->job_id << "] " << job->command->aliased_command << endl;
     }
 }
@@ -236,15 +174,10 @@ void JobsList::removeFinishedJobs() {
     auto it = jobs_list.begin();
     while (it != jobs_list.end()) {
         int end_status;
-        // cout << "job id - " << (*it) ->job_id << endl;
         pid_t result = waitpid((*it)->job_pid, &end_status, WNOHANG);
-        // cout << "result of wait - " << result << endl;
         if (result > 0) {
-            // if (WIFEXITED(end_status) || WIFSIGNALED(end_status)) {
-                delete *it;
-                it = jobs_list.erase(it);
-            // }
-            // else ++it;
+            delete *it;
+            it = jobs_list.erase(it);
         } 
         else ++it;
     }
@@ -260,11 +193,8 @@ JobsList::JobEntry *JobsList::getJobById(int jobId) {
 
 void JobsList::removeJobById(int jobId) {
     auto it = jobs_list.begin();
-    // cout << "jobhere1" << endl;
     while (it != jobs_list.end()) {
-        // cout << "jobherewhile" << endl;
         if ((*it)->job_id == jobId) {
-            // cout << "jobhere2" << endl;
             delete *it;
             jobs_list.erase(it);
             return;
@@ -275,11 +205,8 @@ void JobsList::removeJobById(int jobId) {
 
 void JobsList::removeJobByPid(int jobPid) {
     auto it = jobs_list.begin();
-    // cout << "jobhere1" << endl;
     while (it != jobs_list.end()) {
-        // cout << "jobherewhile" << endl;
         if ((*it)->job_pid == jobPid) {
-            // cout << "jobhere2" << endl;
             delete *it;
             jobs_list.erase(it);
             return;
@@ -309,31 +236,28 @@ Command::Command(const char *cmd_line) : command_str(cmd_line), aliased_command(
     isBackground = _isBackgroundComamnd(cmd_line);
     char* new_cmd = strdup(cmd_line);
     if (isBackground) _removeBackgroundSign(new_cmd);
-    //  cout << "command text - " << new_cmd << endl;
-    // _trim(new_cmd);
+
     istringstream stream(new_cmd);
     string word;
 
     if (stream >> word) {
-        // cout << "first word - " << word << endl;
         command_name = word;
     }
     while (stream >> word) {
-        // cout << "argument - " << word << endl;
         command_args.push_back(word);
     }
         
     free(new_cmd);
-                        //  cout << "command args in constr" << this->command_str << endl;
-        // cout << "command name in constr - " << this->command_name << endl;
-        // for (int i = 0; i < this->command_args.size(); i++) {
-        //     cout << "argument number in constr- " << i << " " << this->command_args[i] << endl;
-        // }
 
 }
 
 RedirectionCommand::RedirectionCommand(const char *cmd_line) : Command(cmd_line) {
     isBackground = false;
+    char* copy = strdup(command_str.c_str());
+    _removeBackgroundSign(copy);
+    _trim(copy);
+    command_str = string(copy);
+    free(copy);
 
     size_t pos_of_big_redir = command_str.find(">>");
     if (pos_of_big_redir != std::string::npos) {
@@ -350,7 +274,11 @@ RedirectionCommand::RedirectionCommand(const char *cmd_line) : Command(cmd_line)
 }
 
 PipeCommand::PipeCommand(const char *cmd_line) : Command(cmd_line) {
-    size_t pos_of_pipe_err = command_str.find("|&");
+    char* copy = strdup(command_str.c_str());
+    _removeBackgroundSign(copy);
+    _trim(copy);
+    command_str = string(copy);
+    free(copy);    size_t pos_of_pipe_err = command_str.find("|&");
     if (pos_of_pipe_err != string::npos) {
         isErr = true;
         command_name_1 = _trim(command_str.substr(0, pos_of_pipe_err));
@@ -363,4 +291,11 @@ PipeCommand::PipeCommand(const char *cmd_line) : Command(cmd_line) {
         command_name_2 = _trim(command_str.substr(pos_of_pipe_err+1));
     }
 
+}
+
+aliasCommand::aliasCommand(const char *cmd_line, map<string, string>& alias_map, vector<string>& keys) : BuiltInCommand(cmd_line), alias_map(alias_map), keys(keys) {
+     char* copy = strdup(command_str.c_str());
+     _removeBackgroundSign(copy);
+     command_str = string(copy);
+     free(copy);
 }

@@ -71,5 +71,8 @@ p
 s
 t
 test
-smash> smash> smash> smash> smash> smash: sending SIGKILL signal to 1 jobs:
+smash> smash> 0
+2
+end: 4
+smash> smash> smash> smash: sending SIGKILL signal to 1 jobs:
 2: sleep 100&
