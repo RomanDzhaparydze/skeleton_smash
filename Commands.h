@@ -77,13 +77,13 @@ public:
 
     void execute() override {
         if (command_args.size() != 1) {
-            std::cerr << "smash error: cd: too many arguments" << std::endl;
+            cerr << "smash error: cd: too many arguments" << endl;
             return;
         }
 
         if (command_args[0] == "-") {
             if (*plastPwd == nullptr) {
-                std::cerr << "smash error: cd: OLDPWD not set" << std::endl;
+                cerr << "smash error: cd: OLDPWD not set" << endl;
                 return;
             }
             command_args[0] = *plastPwd;
@@ -173,7 +173,7 @@ public:
 
     JobEntry *getLastStoppedJob(int *jobId);
 
-    std::vector<JobEntry*> getJobsList() const {
+    vector<JobEntry*> getJobsList() const {
         return jobs_list;
     }
 };
@@ -236,7 +236,7 @@ public:
 
     void execute() override {
         if (command_args.size() > 1) {
-            std::cerr << "smash error: listdir: too many arguments" << std::endl;
+            cerr << "smash error: listdir: too many arguments" << endl;
             return;
         }
         const char* path_of_dir;
@@ -555,14 +555,14 @@ public:
             return;
         }
         if (command_args.size() == 1 && all_of(command_args[0].begin(), command_args[0].end(), ::isdigit)) {
-            std::cerr << "smash error: watch: command not specified" << std::endl;
+            cerr << "smash error: watch: command not specified" << endl;
             return;
         }
 
         if (command_args.size() >= 2 && all_of(command_args[0].begin(), command_args[0].end(), ::isdigit)) {
             interval = std::stoi(command_args[0]);
             if (interval <= 0) {
-                std::cerr << "smash error: watch: invalid interval" << std::endl;
+                cerr << "smash error: watch: invalid interval" << endl;
                 return;
             }
 
@@ -573,7 +573,7 @@ public:
 
         SmallShell& smash = SmallShell::getInstance();
         while (true) {
-            std::cout << "\033[2J\033[H";
+            cout << "\033[2J\033[H";
 
             Command *cmd = SmallShell::getInstance().CreateCommand(command_to_watch.c_str());
             smash.setForegroundPid(getpid());

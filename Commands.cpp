@@ -113,9 +113,9 @@ Command *SmallShell::CreateCommand(const char *cmd_line) {
         return new aliasCommand(real_command, alias_map, keys);
     } else if (firstWord.compare("unalias") == 0) {
         return new unaliasCommand(real_command, alias_map, keys);
-    } else if (cmd_line_str.find('>') != std::string::npos){
+    } else if (cmd_line_str.find('>') != string::npos){
         return new RedirectionCommand(real_command);
-    } else if (cmd_line_str.find('|') != std::string::npos){
+    } else if (cmd_line_str.find('|') != string::npos){
         return new PipeCommand(real_command);
     }  else if (firstWord.compare("showpid") == 0) {
         return new ShowPidCommand(real_command);
@@ -260,7 +260,7 @@ RedirectionCommand::RedirectionCommand(const char *cmd_line) : Command(cmd_line)
     free(copy);
 
     size_t pos_of_big_redir = command_str.find(">>");
-    if (pos_of_big_redir != std::string::npos) {
+    if (pos_of_big_redir != string::npos) {
         isAppend = true;
         file_name = _trim(command_str.substr(pos_of_big_redir + 2));
         command_name_in_redir = _trim(command_str.substr(0, pos_of_big_redir));
