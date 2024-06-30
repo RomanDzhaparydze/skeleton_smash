@@ -560,7 +560,7 @@ public:
         }
 
         if (command_args.size() >= 2 && all_of(command_args[0].begin(), command_args[0].end(), ::isdigit)) {
-            interval = std::stoi(command_args[0]);
+            interval = stoi(command_args[0]);
             if (interval <= 0) {
                 cerr << "smash error: watch: invalid interval" << endl;
                 return;
