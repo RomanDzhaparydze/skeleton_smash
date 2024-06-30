@@ -1,11 +1,7 @@
-smash> in constructor size of jobs - 0
-smash> smash> in constructor size of jobs - 1
-[1] sleep 10&
-smash> smash> in constructor size of jobs - 2
-[1] sleep 10&
+smash> smash> smash> [1] sleep 10&
+smash> smash> [1] sleep 10&
 [2] sleep 20&
-smash> smash> smash> in constructor size of jobs - 4
-[1] sleep 10&
+smash> smash> smash> [1] sleep 10&
 [2] sleep 20&
 [3] sleep 30&
 [4] sleep 40&

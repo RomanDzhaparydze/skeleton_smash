@@ -1,0 +1,3 @@
+smash error: alias: h already exists or is a reserved command
+smash error: alias: pwd already exists or is a reserved command
+smash error: unalias: as alias does not exist
