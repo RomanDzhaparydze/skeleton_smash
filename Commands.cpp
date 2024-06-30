@@ -24,6 +24,7 @@ const std::string WHITESPACE = " \n\r\t\f\v";
 #define FUNC_EXIT()
 #endif
 
+
 string _ltrim(const std::string &s) {
     size_t start = s.find_first_not_of(WHITESPACE);
     return (start == std::string::npos) ? "" : s.substr(start);
@@ -110,7 +111,7 @@ Command *SmallShell::CreateCommand(const char *cmd_line) {
 
     string cmd_s = _trim(string(cmd_line)); 
     string firstWord = cmd_s.substr(0, cmd_s.find_first_of(" \n"));
-    cout << "amount of jobs - " << job_list_of_shell->getJobsList().size()  << " before " << cmd_line << endl;
+    // cout << "amount of jobs - " << job_list_of_shell->getJobsList().size()  << " before " << cmd_line << endl;
 
     const char* real_command = cmd_line;
     auto alias_it = alias_map.find(firstWord);
@@ -122,15 +123,15 @@ Command *SmallShell::CreateCommand(const char *cmd_line) {
         firstWord = cmd_s.substr(0, cmd_s.find_first_of(" \n"));
         real_command = cmd_s.c_str();
     }
-    size_t pos_of_small_redir = cmd_s.find('<');
-    if (pos_of_small_redir != string::npos) {
-        return new RedirectionCommand(cmd_line);
-    }
+    // size_t pos_of_small_redir = cmd_s.find('<');
+    // if (pos_of_small_redir != string::npos) {
+    //     return new RedirectionCommand(cmd_line);
+    // }
 
-    size_t pos_of_pipe = cmd_s.find('|');
-    if (pos_of_pipe != string::npos) {
-        return new PipeCommand(cmd_line);
-    }
+    // size_t pos_of_pipe = cmd_s.find('|');
+    // if (pos_of_pipe != string::npos) {
+    //     return new PipeCommand(cmd_line);
+    // }
 
     string cmd_line_str(cmd_line);
     // cout << cmd_line_str << endl;
@@ -178,8 +179,13 @@ void SmallShell::executeCommand(const char *cmd_line) {
     //cmd->execute();
     // Please note that you must fork smash process for some commands (e.g., external commands....)
     // std::cout << curr_prompt << "> ";
+    // cout << "before removeJobs amount of jobs - " << job_list_of_shell->getJobsList().size() << " in command " << cmd_line << endl;
+    // job_list_of_shell->printJobsList();
     job_list_of_shell->removeFinishedJobs();
+    // cout << "after removeJobs amount of jobs - " << job_list_of_shell->getJobsList().size() << " in command " << cmd_line << endl;
+    // job_list_of_shell->printJobsList();
     Command* cmd = CreateCommand(cmd_line);
+    // cout << "after create amount of jobs - " << job_list_of_shell->getJobsList().size() << " in command " << cmd_line << endl;
     setForegroundPid(-1);
     cmd->execute();
 }
@@ -232,7 +238,8 @@ void JobsList::removeFinishedJobs() {
         int end_status;
         // cout << "job id - " << (*it) ->job_id << endl;
         pid_t result = waitpid((*it)->job_pid, &end_status, WNOHANG);
-        if (result != 0) {
+        // cout << "result of wait - " << result << endl;
+        if (result > 0) {
             // if (WIFEXITED(end_status) || WIFSIGNALED(end_status)) {
                 delete *it;
                 it = jobs_list.erase(it);
@@ -257,6 +264,21 @@ void JobsList::removeJobById(int jobId) {
     while (it != jobs_list.end()) {
         // cout << "jobherewhile" << endl;
         if ((*it)->job_id == jobId) {
+            // cout << "jobhere2" << endl;
+            delete *it;
+            jobs_list.erase(it);
+            return;
+        }
+        ++it;
+    }
+}
+
+void JobsList::removeJobByPid(int jobPid) {
+    auto it = jobs_list.begin();
+    // cout << "jobhere1" << endl;
+    while (it != jobs_list.end()) {
+        // cout << "jobherewhile" << endl;
+        if ((*it)->job_pid == jobPid) {
             // cout << "jobhere2" << endl;
             delete *it;
             jobs_list.erase(it);

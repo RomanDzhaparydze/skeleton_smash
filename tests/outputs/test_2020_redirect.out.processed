@@ -1,168 +1,75 @@
-smash> amount of jobs - 0 before mkdir -p redirect
-smash> amount of jobs - 0 before cd redirect
-smash> amount of jobs - 0 before ls
-smash> amount of jobs - 0 before echo test_redirect> new
-smash> amount of jobs - 0 before cat new
-command to execute - echo test_redirect
-amount of jobs - 0 before echo test_redirect
+smash> smash> smash> smash> smash> test_redirect
+smash> smash> again_redirect
+smash> smash> again_redirect
 test_redirect
-smash> amount of jobs - 0 before echo again_redirect> new
-smash> amount of jobs - 0 before cat new
-command to execute - echo again_redirect
-amount of jobs - 0 before echo again_redirect
-again_redirect
-smash> amount of jobs - 0 before echo test_redirect>> new
-smash> amount of jobs - 0 before cat new
-command to execute - echo again_redirect
-amount of jobs - 0 before echo again_redirect
-again_redirect
-command to execute - echo test_redirect
-amount of jobs - 0 before echo test_redirect
+smash> smash> smash pid is 1
+smash> smash> smash pid is 1
+smash pid is 1
+smash> smash> smash pid is 1
+smash> mypid
+new
+smash> smash> smash> [1] sleep 100&
+smash> smash> smash> smash> smash> k
+mypid
+new
+s
+t
+smash> smash> k
+mypid
+new
+p
+s
+t
+smash> k
+mypid
+new
+p
+s
+t
+smash> smash> smash> before
+smash> again_redirect
 test_redirect
-smash> amount of jobs - 0 before showpid > mypid
-smash> amount of jobs - 0 before cat mypid
-command to execute - showpid
-amount of jobs - 0 before showpid
-smash pid is 1
-smash> amount of jobs - 0 before showpid >> mypid
-smash> amount of jobs - 0 before cat mypid
-command to execute - showpid
-amount of jobs - 0 before showpid
-smash pid is 1
-command to execute - showpid
-amount of jobs - 0 before showpid
-smash pid is 1
-smash> amount of jobs - 0 before showpid > mypid
-smash> amount of jobs - 0 before cat mypid
-command to execute - showpid
-amount of jobs - 0 before showpid
-smash pid is 1
-smash> amount of jobs - 0 before ls
+smash> smash> smash> smash> k
 mypid
-new
-smash> amount of jobs - 0 before sleep 100&
-smash> amount of jobs - 1 before jobs > s
-smash> amount of jobs - 1 before cat s
-command to execute - jobs
-amount of jobs - 0 before jobs
-smash> amount of jobs - 1 before kill 1 > k
-smash> amount of jobs - 1 before cat k
-command to execute - kill 1
-amount of jobs - 0 before kill 1
-smash> amount of jobs - 1 before kill 10 > t
-smash> amount of jobs - 1 before cat t
-command to execute - kill 10
-amount of jobs - 0 before kill 10
-smash> amount of jobs - 1 before ls
-k
-mypid
-new
+p
 s
 t
-smash> amount of jobs - 1 before ls > p
-smash> amount of jobs - 1 before cat p
-command to execute - ls
-amount of jobs - 0 before ls
-k
+smash> smash> k
 mypid
 new
 p
 s
 t
-smash> amount of jobs - 1 before ls
-k
+smash> k
 mypid
 new
 p
 s
 t
-smash> amount of jobs - 1 before ls > /dfgdfg/dfgdfg
-smash> amount of jobs - 1 before ls >/tmp/smash/test/new
-smash> amount of jobs - 1 before echo before
-before
-smash> amount of jobs - 1 before cat new
-command to execute - echo again_redirect
-amount of jobs - 0 before echo again_redirect
-again_redirect
-command to execute - echo test_redirect
-amount of jobs - 0 before echo test_redirect
-test_redirect
-smash> amount of jobs - 1 before chmod 0 new
-smash> amount of jobs - 1 before ls > new
-smash> amount of jobs - 1 before rm new
-smash> amount of jobs - 1 before ls
-k
-mypid
-p
-s
-t
-smash> amount of jobs - 1 before ls>new
-smash> amount of jobs - 1 before cat new
-command to execute - ls
-amount of jobs - 0 before ls
-k
+smash> smash> smash> k
 mypid
 new
 p
 s
 t
-smash> amount of jobs - 1 before ls
-k
+smash> k
 mypid
 new
 p
 s
 t
-smash> amount of jobs - 1 before rm new
-smash> amount of jobs - 1 before ls> new
-smash> amount of jobs - 1 before cat new
-command to execute - ls
-amount of jobs - 0 before ls
-k
+smash> smash> smash> k
 mypid
 new
 p
 s
 t
-smash> amount of jobs - 1 before ls
-k
-mypid
-new
-p
-s
-t
-smash> amount of jobs - 1 before rm new
-smash> amount of jobs - 1 before ls >new
-smash> amount of jobs - 1 before cat new
-command to execute - ls
-amount of jobs - 0 before ls
-k
-mypid
-new
-p
-s
-t
-smash> amount of jobs - 1 before mkdir test
-smash> amount of jobs - 1 before ls > test/again
-smash> amount of jobs - 1 before cat test/again
-command to execute - ls
-amount of jobs - 0 before ls
-k
+smash> smash> smash> k
 mypid
 new
 p
 s
 t
 test
-smash> amount of jobs - 1 before ../my_sleep 4 > sl
-smash> amount of jobs - 1 before cat sl
-command to execute - ../my_sleep 4
-amount of jobs - 0 before ../my_sleep 4
-0
-2
-end: 4
-smash> amount of jobs - 1 before cd ..
-smash> amount of jobs - 1 before rm -rf redirect
-smash> amount of jobs - 1 before quit kill
-smash: sending SIGKILL signal to 1 jobs:
+smash> smash> smash> smash> smash> smash: sending SIGKILL signal to 1 jobs:
 2: sleep 100&

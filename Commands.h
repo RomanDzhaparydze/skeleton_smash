@@ -28,6 +28,7 @@ using namespace std;
 
 extern string curr_prompt;
 
+
 class Command {
 public:
 string command_str;
@@ -166,6 +167,8 @@ public:
 
     void removeJobById(int jobId);
 
+    void removeJobByPid(int jobPid);
+
     JobEntry *getLastJob(int *lastJobId);
 
     JobEntry *getLastStoppedJob(int *jobId);
@@ -207,7 +210,7 @@ public:
     virtual ~KillCommand() = default;
 
     void execute() override {
-        if (command_args.size() != 2 || !is_number(command_args[1])) {
+        if (command_args.size() != 2 || command_args[0][0] != '-' || !is_number(command_args[0].substr(1)) || !is_number(command_args[1])) {
             cerr << "smash error: kill: invalid arguments" << endl;
             return;
         }
@@ -217,17 +220,16 @@ public:
             cerr << "smash error: kill: job-id "<< id <<" does not exist" << endl;
             return;
         }
-        if (command_args[0][0] != '-' || !is_number(command_args[0].substr(1))) {
-            cerr << "smash error: kill: invalid arguments" << endl;
-            return;
-        }
+        // if (command_args[0][0] != '-' || !is_number(command_args[0].substr(1))) {
+        //     cerr << "smash error: kill: invalid arguments" << endl;
+        //     return;
+        // }
         int signal = stoi(command_args[0].substr(1));
-
+        cout << "signal number " << signal << " was sent to pid " << curr_job->job_pid << endl;
         if (kill(curr_job->job_pid, signal) == -1) {
             perror("smash error: kill failed");
             return;
         }
-        std::cout << "signal number " << signal << " was sent to pid " << curr_job->job_pid << std::endl;
     }
 };
 
@@ -503,7 +505,7 @@ public:
                 // cout << "ccc" << endl;
                 execl("/bin/bash", "bash", "-c", command_str.c_str(), nullptr);
             }
-            perror("smash error: exec failed ccc");
+            // perror("smash error: exec failed");
             exit(1);
         }
         else {
@@ -610,17 +612,21 @@ public:
             close(my_pipe[0]);
             close(my_pipe[1]);
 
-            istringstream stream(command_name_1);
-            string word;
-            vector<const char*> argv;
-            while (stream >> word) {
-                argv.push_back(word.c_str());
-            }
-            argv.push_back(nullptr);
-
-            execvp(argv[0], const_cast<char* const*>(argv.data()));
-            perror("smash error: exec failed aaa");
+            SmallShell& smallShell = SmallShell::getInstance();
+            smallShell.executeCommand(command_name_1.c_str());
             exit(1);
+
+            // istringstream stream(command_name_1);
+            // string word;
+            // vector<const char*> argv;
+            // while (stream >> word) {
+            //     argv.push_back(word.c_str());
+            // }
+            // argv.push_back(nullptr);
+
+            // execvp(argv[0], const_cast<char* const*>(argv.data()));
+            // perror("smash error: exec failed aaa");
+            // exit(1);
         }
         pid_t pid2 = fork();
         if (pid2 == -1) {
@@ -634,17 +640,21 @@ public:
             dup2(my_pipe[0], 0);
             close(my_pipe[0]);
             close(my_pipe[1]);
-            istringstream stream(command_name_2);
-            string word;
-            vector<const char*> argv;
-            while (stream >> word) {
-                argv.push_back(word.c_str());
-            }
-            argv.push_back(nullptr);
 
-            execvp(argv[0], const_cast<char* const*>(argv.data()));
-            perror("smash error: exec failed bbb");
+            SmallShell& smallShell = SmallShell::getInstance();
+            smallShell.executeCommand(command_name_2.c_str());
             exit(1);
+            // istringstream stream(command_name_2);
+            // string word;
+            // vector<const char*> argv;
+            // while (stream >> word) {
+            //     argv.push_back(word.c_str());
+            // }
+            // argv.push_back(nullptr);
+
+            // execvp(argv[0], const_cast<char* const*>(argv.data()));
+            // perror("smash error: exec failed bbb");
+            // exit(1);
         }
         else {
             SmallShell& smallShell = SmallShell::getInstance();
@@ -740,22 +750,23 @@ public:
         }
         else if (pid == 0) {
             // child process 
+
             setpgrp();
             close(STDOUT_FILENO);
             int success;
-            if (isAppend) success = open(file_name.c_str(), O_RDWR | O_CREAT | O_APPEND, 0644);
-            else success = open(file_name.c_str(), O_RDWR | O_CREAT | O_TRUNC, 0644);
+
+            if (isAppend) success = open(file_name.c_str(), O_RDWR | O_CREAT | O_APPEND, 0664);
+            else success = open(file_name.c_str(), O_RDWR | O_CREAT | O_TRUNC, 0664);
             if (success == -1) {
                 perror("smash error: open failed");
                 exit(1);
             }
             // redirecting the output
-            if (dup2(success, STDOUT_FILENO) == -1) {
-                perror("smash error: dup2 failed");
-                close(success);
-                exit (1);
-            }
-            // close(success);
+            // if (dup2(success, STDOUT_FILENO) == -1) {
+            //     perror("smash error: dup2 failed");
+            //     close(success);
+            //     exit (1);
+            // }
             // istringstream stream(command_name);
             // string word;
             // vector<const char*> argv;
@@ -777,9 +788,14 @@ public:
             // // Execute the command
             // execvp(argv[0], argv.data());
             // perror("smash error: exec failed");
+            // string cmd_s = _trim(string(command_name_in_redir)); 
+            // string firstWord = cmd_s.substr(0, cmd_s.find_first_of(" \n"));
+            // if (firstWord.compare("jobs") == 0)
             SmallShell& smallShell = SmallShell::getInstance();
-            cout << "command to execute - " << command_name_in_redir.c_str() << endl;
+            // cout << "command to execute - " << command_name_in_redir.c_str() << endl;
+            // cout << "in redir amount of jobs - " << smallShell.getJobsList()->getJobsList().size() << endl;
             smallShell.executeCommand(command_name_in_redir.c_str());
+            close(success);
             exit(1);
         }
         else {
@@ -792,6 +808,7 @@ public:
             if (waitpid(pid, &status, WUNTRACED) == -1) {
                 perror("smash error: waitpid failed");
             }
+            // cout << "after wait" << endl;
             smallShell.setForegroundPid(-1);
         }
     }

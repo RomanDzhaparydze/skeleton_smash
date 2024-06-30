@@ -15,6 +15,7 @@ void ctrlCHandler(int sig_num) {
             perror("smash error: kill failed");
         } else {
             cout << "smash: process " << foreground_pid << " was killed" << endl;
+            smallShell.getJobsList()->removeJobByPid(foreground_pid);
         }
     }
 }

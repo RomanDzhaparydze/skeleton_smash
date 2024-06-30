@@ -1,2 +1,1 @@
-smash> amount of jobs - 0 before quit kill
-smash: sending SIGKILL signal to 0 jobs:
+smash> smash: sending SIGKILL signal to 0 jobs:
